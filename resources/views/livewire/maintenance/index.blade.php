@@ -56,13 +56,13 @@
                         <p class="text-title text-primary">{{ number_format($card->total_cost, 2) }} <small class="text-label-sm">{{ __('messages.sar') }}</small></p>
                     </div>
                     <div class="flex gap-1">
-                        <a href="{{ route('maintenance.print', $card->id) }}" target="_blank" class="md-icon-btn" title="كرت العمل">
+                        <a href="{{ route('maintenance.print', $card->id) }}" target="_blank" class="md-icon-btn" title="{{ __('messages.work_card_print') }}">
                             <span class="material-symbols-rounded" style="font-size:20px">print</span>
                         </a>
-                        <a href="{{ route('maintenance.print-repair', $card->id) }}" target="_blank" class="md-icon-btn" title="كرت الإصلاح">
+                        <a href="{{ route('maintenance.print-repair', $card->id) }}" target="_blank" class="md-icon-btn" title="{{ __('messages.repair_card_print') }}">
                             <span class="material-symbols-rounded" style="font-size:20px">build_circle</span>
                         </a>
-                        <button wire:click="edit({{ $card->id }})" class="md-icon-btn" title="تعديل">
+                        <button wire:click="edit({{ $card->id }})" class="md-icon-btn" title="{{ __('messages.edit') }}">
                             <span class="material-symbols-rounded" style="font-size:20px">edit</span>
                         </button>
                     </div>
@@ -150,8 +150,8 @@
                                     @endforeach
                                 </div>
                                 <div>
-                                    <label class="md-label">أخرى (طلبات إضافية)</label>
-                                    <textarea wire:model="custom_request" rows="2" class="md-field" placeholder="اكتب أي طلبات إضافية، كل طلب في سطر"></textarea>
+                                    <label class="md-label">{{ __('messages.other_requests') }}</label>
+                                    <textarea wire:model="custom_request" rows="2" class="md-field" placeholder="{{ __('messages.other_requests_placeholder') }}"></textarea>
                                 </div>
                             </div>
 

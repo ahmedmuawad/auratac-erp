@@ -29,7 +29,7 @@
             <h3 class="text-display text-on-surface">{{ number_format($totalParts, 2) }} <small class="text-label text-on-surface-variant">{{ __('messages.sar') }}</small></h3>
         </div>
         <div class="p-6 rounded-md-lg bg-primary-container" style="color:var(--md-on-primary-container)">
-            <p class="text-label-sm uppercase tracking-widest mb-2">إجمالي عدد الكروت</p>
+            <p class="text-label-sm uppercase tracking-widest mb-2">{{ __('messages.total_cards_count') }}</p>
             <h3 class="text-display">{{ $totalCards }}</h3>
         </div>
     </div>
@@ -38,16 +38,16 @@
     <div class="md-card-elevated overflow-hidden">
         <div class="p-6 border-b flex justify-between items-center" style="border-color:var(--md-outline-variant)">
             <h3 class="text-title-lg text-on-surface">{{ __('messages.technician_performance') }}</h3>
-            <span class="md-status bg-surface-container text-on-surface-variant">إنجاز الفنيين الفعلي</span>
+            <span class="md-status bg-surface-container text-on-surface-variant">{{ __('messages.technicians_actual') }}</span>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
                     <tr class="bg-surface-low">
-                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">الفني</th>
-                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">الكروت المنجزة</th>
-                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">ساعات العمل</th>
-                        <th class="px-6 py-4 text-end text-label-sm text-on-surface-variant uppercase tracking-widest">كفاءة الأداء</th>
+                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.technician_col') }}</th>
+                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.cards_done') }}</th>
+                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.work_hours') }}</th>
+                        <th class="px-6 py-4 text-end text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.performance') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,7 +60,7 @@
                                 </div>
                             </td>
                             <td class="px-6 py-5 text-title text-on-surface">{{ $stat['cards_count'] }}</td>
-                            <td class="px-6 py-5 text-label text-on-surface-variant">{{ round($stat['total_duration'] / 60, 1) }} ساعة</td>
+                            <td class="px-6 py-5 text-label text-on-surface-variant">{{ round($stat['total_duration'] / 60, 1) }} {{ __('messages.hour_unit') }}</td>
                             <td class="px-6 py-5">
                                 <div class="flex items-center justify-end gap-2">
                                     <div class="w-24 h-2 bg-surface-container rounded-full overflow-hidden">
@@ -71,7 +71,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="4" class="px-6 py-16 text-center text-body text-on-surface-variant">لا توجد بيانات متاحة لهذا النطاق</td></tr>
+                        <tr><td colspan="4" class="px-6 py-16 text-center text-body text-on-surface-variant">{{ __('messages.no_data_range') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>

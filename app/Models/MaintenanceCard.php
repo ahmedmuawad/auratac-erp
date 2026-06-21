@@ -111,12 +111,12 @@ class MaintenanceCard extends Model
     public static function statuses(): array
     {
         return [
-            'pending'      => ['label' => 'بانتظار البدء', 'role' => 'warning'],
-            'in_progress'  => ['label' => 'قيد التنفيذ',   'role' => 'primary'],
-            'waiting_parts'=> ['label' => 'بانتظار قطع غيار', 'role' => 'warning'],
-            'ready_for_qa' => ['label' => 'بانتظار الجودة', 'role' => 'tertiary'],
-            'ready'        => ['label' => 'جاهز للتسليم',  'role' => 'success'],
-            'delivered'    => ['label' => 'تم التسليم',    'role' => 'secondary'],
+            'pending'      => ['label' => __('messages.pending'),       'role' => 'warning'],
+            'in_progress'  => ['label' => __('messages.in_progress'),   'role' => 'primary'],
+            'waiting_parts'=> ['label' => __('messages.waiting_parts'), 'role' => 'warning'],
+            'ready_for_qa' => ['label' => __('messages.ready_for_qa'),  'role' => 'tertiary'],
+            'ready'        => ['label' => __('messages.ready'),         'role' => 'success'],
+            'delivered'    => ['label' => __('messages.delivered'),     'role' => 'secondary'],
         ];
     }
 

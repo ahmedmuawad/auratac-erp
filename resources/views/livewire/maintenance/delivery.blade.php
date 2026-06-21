@@ -40,7 +40,7 @@
                     </div>
 
                     <div class="flex justify-between items-center pt-3 border-t" style="border-color:var(--md-outline-variant)">
-                        <span class="text-label text-on-surface-variant">التكلفة التقديرية</span>
+                        <span class="text-label text-on-surface-variant">{{ __('messages.estimated_cost') }}</span>
                         <span class="text-title text-primary">{{ number_format($card->total_cost, 2) }} {{ __('messages.sar') }}</span>
                     </div>
                 </div>
@@ -52,7 +52,7 @@
         @empty
             <div class="col-span-full py-20 md-card flex flex-col items-center justify-center text-on-surface-variant">
                 <span class="material-symbols-rounded mb-3" style="font-size:56px">inventory_2</span>
-                <p class="text-label uppercase tracking-widest">لا توجد قطع جاهزة للتسليم حالياً</p>
+                <p class="text-label uppercase tracking-widest">{{ __('messages.no_ready_for_delivery') }}</p>
             </div>
         @endforelse
     </div>
@@ -69,21 +69,21 @@
                 <div class="w-screen max-w-md">
                     <div class="h-full flex flex-col bg-surface shadow-md-4">
                         <div class="p-6 border-b flex items-center justify-between bg-surface-low" style="border-color:var(--md-outline-variant)">
-                            <h2 class="text-title-lg text-on-surface">إغلاق الكرت والتسليم</h2>
+                            <h2 class="text-title-lg text-on-surface">{{ __('messages.close_card_delivery') }}</h2>
                             <button wire:click="$set('showModal', false)" class="md-icon-btn"><span class="material-symbols-rounded">close</span></button>
                         </div>
 
                         <div class="flex-1 overflow-y-auto px-6 py-6 space-y-6 custom-scrollbar">
                             <div class="space-y-4">
-                                <p class="text-label-sm text-on-surface-variant uppercase tracking-widest border-b pb-2" style="border-color:var(--md-outline-variant)">التكاليف النهائية والتحصيل</p>
+                                <p class="text-label-sm text-on-surface-variant uppercase tracking-widest border-b pb-2" style="border-color:var(--md-outline-variant)">{{ __('messages.final_costs_collection') }}</p>
                                 <div class="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label class="md-label">أجور اليد النهائية</label>
+                                        <label class="md-label">{{ __('messages.final_hand_labor') }}</label>
                                         <input wire:model.live="final_labor_cost" type="number" class="md-field rounded-md-sm">
                                         @error('final_labor_cost') <span class="text-label-sm text-error">{{ $message }}</span> @enderror
                                     </div>
                                     <div>
-                                        <label class="md-label">قيمة القطع النهائية</label>
+                                        <label class="md-label">{{ __('messages.final_parts_value') }}</label>
                                         <input wire:model.live="final_parts_cost" type="number" class="md-field rounded-md-sm">
                                         @error('final_parts_cost') <span class="text-label-sm text-error">{{ $message }}</span> @enderror
                                     </div>
@@ -91,16 +91,16 @@
 
                                 <div class="bg-onyx p-5 rounded-md-md space-y-3">
                                     <div class="flex justify-between items-center">
-                                        <span class="text-label text-on-onyx-variant">الإجمالي النهائي</span>
+                                        <span class="text-label text-on-onyx-variant">{{ __('messages.final_total') }}</span>
                                         <span class="text-title-lg text-primary">{{ number_format($final_total_cost, 2) }}</span>
                                     </div>
                                     @if($payment_status !== 'paid')
                                         <div class="flex justify-between items-center pt-2 border-t border-white/10">
-                                            <span class="text-label text-on-onyx-variant">المبلغ المسدد</span>
+                                            <span class="text-label text-on-onyx-variant">{{ __('messages.amount_paid') }}</span>
                                             <span class="text-title text-success">{{ number_format($paid_amount, 2) }}</span>
                                         </div>
                                         <div class="flex justify-between items-center pt-2 border-t border-white/10">
-                                            <span class="text-label text-error">المتبقي (مديونية)</span>
+                                            <span class="text-label text-error">{{ __('messages.remaining_debt') }}</span>
                                             <span class="text-title text-error">{{ number_format($remaining_amount, 2) }}</span>
                                         </div>
                                     @endif
@@ -108,25 +108,25 @@
                             </div>
 
                             <div class="space-y-3">
-                                <label class="text-label-sm text-on-surface-variant uppercase tracking-widest border-b pb-2 block" style="border-color:var(--md-outline-variant)">حالة الدفع والتحصيل</label>
+                                <label class="text-label-sm text-on-surface-variant uppercase tracking-widest border-b pb-2 block" style="border-color:var(--md-outline-variant)">{{ __('messages.payment_status_label') }}</label>
                                 <div class="grid grid-cols-3 gap-2">
-                                    <button wire:click="$set('payment_status', 'paid')" class="md-state py-3 rounded-md-sm text-label-sm border-2 {{ $payment_status == 'paid' ? 'bg-success-container text-on-success-container' : 'text-on-surface-variant' }}" style="border-color:{{ $payment_status == 'paid' ? 'var(--md-success)' : 'var(--md-outline-variant)' }}">تم السداد</button>
-                                    <button wire:click="$set('payment_status', 'partial')" class="md-state py-3 rounded-md-sm text-label-sm border-2 {{ $payment_status == 'partial' ? 'bg-warning-container text-on-warning-container' : 'text-on-surface-variant' }}" style="border-color:{{ $payment_status == 'partial' ? 'var(--md-warning)' : 'var(--md-outline-variant)' }}">سداد جزئي</button>
-                                    <button wire:click="$set('payment_status', 'unpaid')" class="md-state py-3 rounded-md-sm text-label-sm border-2 {{ $payment_status == 'unpaid' ? 'bg-error-container text-on-error-container' : 'text-on-surface-variant' }}" style="border-color:{{ $payment_status == 'unpaid' ? 'var(--md-error)' : 'var(--md-outline-variant)' }}">لم يسدد</button>
+                                    <button wire:click="$set('payment_status', 'paid')" class="md-state py-3 rounded-md-sm text-label-sm border-2 {{ $payment_status == 'paid' ? 'bg-success-container text-on-success-container' : 'text-on-surface-variant' }}" style="border-color:{{ $payment_status == 'paid' ? 'var(--md-success)' : 'var(--md-outline-variant)' }}">{{ __('messages.paid_full') }}</button>
+                                    <button wire:click="$set('payment_status', 'partial')" class="md-state py-3 rounded-md-sm text-label-sm border-2 {{ $payment_status == 'partial' ? 'bg-warning-container text-on-warning-container' : 'text-on-surface-variant' }}" style="border-color:{{ $payment_status == 'partial' ? 'var(--md-warning)' : 'var(--md-outline-variant)' }}">{{ __('messages.partial_payment') }}</button>
+                                    <button wire:click="$set('payment_status', 'unpaid')" class="md-state py-3 rounded-md-sm text-label-sm border-2 {{ $payment_status == 'unpaid' ? 'bg-error-container text-on-error-container' : 'text-on-surface-variant' }}" style="border-color:{{ $payment_status == 'unpaid' ? 'var(--md-error)' : 'var(--md-outline-variant)' }}">{{ __('messages.unpaid') }}</button>
                                 </div>
 
                                 @if($payment_status === 'partial')
                                     <div>
-                                        <label class="md-label">المبلغ الذي تم سداده الآن</label>
+                                        <label class="md-label">{{ __('messages.amount_paid_now') }}</label>
                                         <input wire:model.live="paid_amount" type="number" step="0.01" class="md-field rounded-md-sm" placeholder="0.00">
                                     </div>
                                 @endif
-                                <textarea wire:model="delivery_notes" placeholder="أي ملاحظات حول الاستلام أو الضمان..." rows="3" class="md-field"></textarea>
+                                <textarea wire:model="delivery_notes" placeholder="{{ __('messages.delivery_notes_placeholder') }}" rows="3" class="md-field"></textarea>
                             </div>
                         </div>
 
                         <div class="p-6 border-t bg-surface-low" style="border-color:var(--md-outline-variant)">
-                            <button wire:click="confirmDelivery" class="md-btn md-btn-filled w-full">إتمام التسليم وأرشفة الكرت</button>
+                            <button wire:click="confirmDelivery" class="md-btn md-btn-filled w-full">{{ __('messages.finish_delivery_archive') }}</button>
                         </div>
                     </div>
                 </div>

@@ -48,21 +48,21 @@
             {{-- Revenue summary --}}
             <div class="lg:col-span-2 md-card-elevated p-6 flex flex-col min-h-[360px]">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-title-lg text-on-surface">ملخص الإيرادات</h3>
-                    <span class="md-status bg-success-container text-on-success-container">هذا الشهر</span>
+                    <h3 class="text-title-lg text-on-surface">{{ __('messages.revenue_summary') }}</h3>
+                    <span class="md-status bg-success-container text-on-success-container">{{ __('messages.this_month') }}</span>
                 </div>
                 <div class="flex-1 flex flex-col items-center justify-center text-center">
                     <span class="material-symbols-rounded text-primary mb-2" style="font-size:48px">payments</span>
                     <p class="text-display text-on-surface">{{ number_format($deliveredThisMonth, 2) }}</p>
-                    <p class="text-label text-on-surface-variant mt-1">ريال — إجمالي التسليمات المحصّلة هذا الشهر</p>
+                    <p class="text-label text-on-surface-variant mt-1">{{ __('messages.riyal') }} — {{ __('messages.collected_this_month_note') }}</p>
                 </div>
             </div>
 
             {{-- Recent activity --}}
             <div class="md-card-elevated p-6">
                 <div class="flex items-center justify-between mb-5">
-                    <h3 class="text-title-lg text-on-surface">أحدث الكروت</h3>
-                    <a href="{{ route('maintenance.index') }}" class="text-label text-primary">عرض الكل</a>
+                    <h3 class="text-title-lg text-on-surface">{{ __('messages.recent_cards') }}</h3>
+                    <a href="{{ route('maintenance.index') }}" class="text-label text-primary">{{ __('messages.view_all') }}</a>
                 </div>
                 <div class="space-y-1">
                     @forelse($recentCards as $card)
@@ -78,7 +78,7 @@
                             <span class="md-status bg-surface-container text-on-surface-variant shrink-0">{{ $meta['label'] }}</span>
                         </a>
                     @empty
-                        <p class="text-body text-on-surface-variant py-8 text-center">لا توجد كروت بعد.</p>
+                        <p class="text-body text-on-surface-variant py-8 text-center">{{ __('messages.no_cards_yet') }}</p>
                     @endforelse
                 </div>
             </div>

@@ -2,12 +2,12 @@
     {{-- Header --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 md-card-elevated p-6">
         <div>
-            <h1 class="text-headline text-on-surface">إدارة الأدوار والصلاحيات</h1>
-            <p class="text-body text-on-surface-variant mt-1">تخصيص صلاحيات الوصول والعمليات لمختلف الرتب</p>
+            <h1 class="text-headline text-on-surface">{{ __('messages.roles_perms_mgmt') }}</h1>
+            <p class="text-body text-on-surface-variant mt-1">{{ __('messages.roles_perms_sub') }}</p>
         </div>
         <button wire:click="openModal" class="md-btn md-btn-filled">
             <span class="material-symbols-rounded" style="font-size:20px">add</span>
-            إضافة دور جديد
+            {{ __('messages.add_role') }}
         </button>
     </div>
 
@@ -17,26 +17,26 @@
             <div class="md-card-elevated p-6 flex flex-col">
                 <div class="flex items-center justify-between mb-3">
                     <span class="md-status bg-surface-container text-on-surface-variant">{{ $role->name }}</span>
-                    <span class="md-status bg-success-container text-on-success-container">رتبة نشطة</span>
+                    <span class="md-status bg-success-container text-on-success-container">{{ __('messages.active_role') }}</span>
                 </div>
                 <h3 class="text-title-lg text-on-surface mb-1">{{ $role->display_name }}</h3>
-                <p class="text-label text-on-surface-variant mb-5">{{ $role->description ?? 'لا يوجد وصف لهذا الدور حالياً' }}</p>
+                <p class="text-label text-on-surface-variant mb-5">{{ $role->description ?? '—' }}</p>
 
                 <div class="mb-5">
-                    <p class="text-label-sm text-on-surface-variant uppercase tracking-widest mb-2">الصلاحيات الممنوحة ({{ $role->permissions->count() }})</p>
+                    <p class="text-label-sm text-on-surface-variant uppercase tracking-widest mb-2">{{ __('messages.granted_perms') }} ({{ $role->permissions->count() }})</p>
                     <div class="flex flex-wrap gap-2">
                         @forelse($role->permissions->take(5) as $perm)
                             <span class="md-chip">{{ $perm->display_name }}</span>
                         @empty
-                            <span class="text-label text-on-surface-variant">لا توجد صلاحيات محددة</span>
+                            <span class="text-label text-on-surface-variant">{{ __('messages.no_perms_set') }}</span>
                         @endforelse
                         @if($role->permissions->count() > 5)
-                            <span class="md-chip md-chip-selected">+ {{ $role->permissions->count() - 5 }} أخرى</span>
+                            <span class="md-chip md-chip-selected">+ {{ $role->permissions->count() - 5 }} {{ __('messages.others_extra') }}</span>
                         @endif
                     </div>
                 </div>
 
-                <button wire:click="openModal({{ $role->id }})" class="md-btn md-btn-tonal w-full mt-auto">تعديل الدور والصلاحيات</button>
+                <button wire:click="openModal({{ $role->id }})" class="md-btn md-btn-tonal w-full mt-auto">{{ __('messages.edit_role_perms') }}</button>
             </div>
         @endforeach
     </div>
@@ -50,8 +50,8 @@
                     <div class="h-full flex flex-col bg-surface shadow-md-4">
                         <div class="p-6 border-b flex items-center justify-between bg-surface-low" style="border-color:var(--md-outline-variant)">
                             <div>
-                                <h2 class="text-title-lg text-on-surface">{{ $editingRoleId ? 'تعديل الدور' : 'إضافة دور جديد' }}</h2>
-                                <p class="text-label-sm text-on-surface-variant mt-1">عرّف الرتبة واختر صلاحياتها بدقة</p>
+                                <h2 class="text-title-lg text-on-surface">{{ $editingRoleId ? __('messages.edit_role') : __('messages.add_role') }}</h2>
+                                <p class="text-label-sm text-on-surface-variant mt-1">{{ __('messages.define_role_perms') }}</p>
                             </div>
                             <button wire:click="$set('showModal', false)" class="md-icon-btn"><span class="material-symbols-rounded">close</span></button>
                         </div>
@@ -59,24 +59,24 @@
                         <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
                             <div class="grid grid-cols-2 gap-5">
                                 <div>
-                                    <label class="md-label">اسم الدور (برمجياً)</label>
+                                    <label class="md-label">{{ __('messages.role_name_code') }}</label>
                                     <input wire:model="name" type="text" placeholder="e.g. supervisor" class="md-field rounded-md-sm" dir="ltr">
                                     @error('name') <span class="text-label-sm text-error">{{ $message }}</span> @enderror
                                 </div>
                                 <div>
-                                    <label class="md-label">اسم الدور (للعرض)</label>
-                                    <input wire:model="display_name" type="text" placeholder="مثال: مشرف الصيانة" class="md-field rounded-md-sm">
+                                    <label class="md-label">{{ __('messages.role_name_display') }}</label>
+                                    <input wire:model="display_name" type="text" class="md-field rounded-md-sm">
                                     @error('display_name') <span class="text-label-sm text-error">{{ $message }}</span> @enderror
                                 </div>
                             </div>
 
                             <div>
-                                <label class="md-label">وصف الدور</label>
+                                <label class="md-label">{{ __('messages.role_description') }}</label>
                                 <textarea wire:model="description" rows="2" class="md-field"></textarea>
                             </div>
 
                             <div class="space-y-4">
-                                <p class="text-label-sm text-primary uppercase tracking-widest border-b pb-2" style="border-color:var(--md-outline-variant)">تفصيل الصلاحيات والامتيازات</p>
+                                <p class="text-label-sm text-primary uppercase tracking-widest border-b pb-2" style="border-color:var(--md-outline-variant)">{{ __('messages.perms_detail') }}</p>
                                 @foreach($permissionGroups as $group => $perms)
                                     <div class="md-card-filled p-5 space-y-3">
                                         <h4 class="text-label text-on-surface flex items-center gap-2">
@@ -97,8 +97,8 @@
                         </div>
 
                         <div class="p-6 border-t bg-surface-low flex gap-3" style="border-color:var(--md-outline-variant)">
-                            <button wire:click="$set('showModal', false)" class="md-btn md-btn-outlined flex-1">إلغاء</button>
-                            <button wire:click="save" class="md-btn md-btn-filled flex-[2]">حفظ الإعدادات والصلاحيات</button>
+                            <button wire:click="$set('showModal', false)" class="md-btn md-btn-outlined flex-1">{{ __('messages.cancel') }}</button>
+                            <button wire:click="save" class="md-btn md-btn-filled flex-[2]">{{ __('messages.save_role_perms') }}</button>
                         </div>
                     </div>
                 </div>

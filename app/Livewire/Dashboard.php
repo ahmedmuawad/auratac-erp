@@ -14,10 +14,10 @@ class Dashboard extends Component
             ->pluck('c', 'status');
 
         $metrics = [
-            ['key' => 'pending',       'label' => 'بانتظار البدء',   'value' => (int) ($counts['pending'] ?? 0),       'role' => 'warning', 'icon' => 'pending_actions'],
-            ['key' => 'in_progress',   'label' => 'قيد التنفيذ',     'value' => (int) ($counts['in_progress'] ?? 0),   'role' => 'primary', 'icon' => 'construction'],
-            ['key' => 'ready_for_qa',  'label' => 'بانتظار الجودة',  'value' => (int) ($counts['ready_for_qa'] ?? 0),  'role' => 'tertiary', 'icon' => 'verified_user'],
-            ['key' => 'ready',         'label' => 'جاهز للتسليم',    'value' => (int) ($counts['ready'] ?? 0),         'role' => 'success', 'icon' => 'inventory_2'],
+            ['key' => 'pending',       'label' => __('messages.pending'),       'value' => (int) ($counts['pending'] ?? 0),       'role' => 'warning', 'icon' => 'pending_actions'],
+            ['key' => 'in_progress',   'label' => __('messages.in_progress'),   'value' => (int) ($counts['in_progress'] ?? 0),   'role' => 'primary', 'icon' => 'construction'],
+            ['key' => 'ready_for_qa',  'label' => __('messages.ready_for_qa'),  'value' => (int) ($counts['ready_for_qa'] ?? 0),  'role' => 'tertiary', 'icon' => 'verified_user'],
+            ['key' => 'ready',         'label' => __('messages.ready'),         'value' => (int) ($counts['ready'] ?? 0),         'role' => 'success', 'icon' => 'inventory_2'],
         ];
 
         $deliveredThisMonth = MaintenanceCard::where('status', 'delivered')

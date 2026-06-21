@@ -39,7 +39,7 @@ class InitialSettingsSeeder extends Seeder
             ],
             [
                 'key' => 'footer_text',
-                'value' => 'AURA TAC — Integrated Guns Room Solutions',
+                'value' => 'تصميم وتطوير S-Plus',
                 'group' => 'branding',
             ],
             

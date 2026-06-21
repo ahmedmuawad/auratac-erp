@@ -59,7 +59,7 @@
                                     </div>
                                     <p class="text-label text-on-surface">{{ $task->task_description }}</p>
                                     @if($task->used_parts_text)
-                                        <p class="text-label-sm text-tertiary mt-1">قطع غيار: {{ $task->used_parts_text }}</p>
+                                        <p class="text-label-sm text-tertiary mt-1">{{ __('messages.spare_parts_used') }}: {{ $task->used_parts_text }}</p>
                                     @endif
                                 </div>
                             @endforeach

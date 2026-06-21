@@ -26,7 +26,7 @@
     <a href="{{ route('maintenance.quick-ticket') }}"
        class="md-state flex items-center gap-3 h-14 px-5 rounded-md-lg bg-primary text-on-primary font-bold mb-6 shadow-md-2">
         <span class="material-symbols-rounded" style="font-size:24px">bolt</span>
-        <span class="text-label">استلام قطعة (سريع)</span>
+        <span class="text-label">{{ __('messages.quick_receive') }}</span>
     </a>
 
     {{-- Navigation --}}
@@ -63,7 +63,7 @@
             @if(auth()->user()->hasPermission('maintenance.view'))
                 <a href="{{ route('maintenance.index') }}" class="md-nav-item {{ request()->routeIs('maintenance.index') && !request('filter_status') ? 'md-nav-item-active' : '' }}">
                     <span class="material-symbols-rounded" style="font-size:22px">assignment</span>
-                    <span>كروت الصيانة</span>
+                    <span>{{ __('messages.maintenance_cards') }}</span>
                 </a>
             @endif
 
@@ -77,25 +77,25 @@
             @if(auth()->user()->hasPermission('maintenance.qa_delivery'))
                 <a href="{{ route('maintenance.qa') }}" class="md-nav-item {{ request()->routeIs('maintenance.qa') ? 'md-nav-item-active' : '' }}">
                     <span class="material-symbols-rounded" style="font-size:22px">verified_user</span>
-                    <span>فحص الجودة</span>
+                    <span>{{ __('messages.quality_check') }}</span>
                 </a>
                 <a href="{{ route('maintenance.delivery') }}" class="md-nav-item {{ request()->routeIs('maintenance.delivery') ? 'md-nav-item-active' : '' }}">
                     <span class="material-symbols-rounded" style="font-size:22px">local_shipping</span>
-                    <span>التسليم</span>
+                    <span>{{ __('messages.delivery') }}</span>
                 </a>
             @endif
 
             @if(auth()->user()->hasPermission('maintenance.view'))
                 <a href="{{ route('maintenance.index', ['filter_status' => 'delivered']) }}" class="md-nav-item {{ request('filter_status') == 'delivered' ? 'md-nav-item-active' : '' }}">
                     <span class="material-symbols-rounded" style="font-size:22px">inventory</span>
-                    <span>أرشيف الكروت</span>
+                    <span>{{ __('messages.cards_archive') }}</span>
                 </a>
             @endif
         </div>
 
         {{-- Reports --}}
         <div class="space-y-1 pt-4 border-t border-white/5">
-            <p class="px-4 mb-2 text-label-sm text-on-onyx-variant uppercase tracking-widest">التقارير والاستعلام</p>
+            <p class="px-4 mb-2 text-label-sm text-on-onyx-variant uppercase tracking-widest">{{ __('messages.reports_inquiry') }}</p>
 
             <a href="{{ route('reports.history') }}" class="md-nav-item {{ request()->routeIs('reports.history') ? 'md-nav-item-active' : '' }}">
                 <span class="material-symbols-rounded" style="font-size:22px">manage_search</span>
@@ -104,7 +104,7 @@
 
             <a href="{{ route('reports.analytics') }}" class="md-nav-item {{ request()->routeIs('reports.analytics') ? 'md-nav-item-active' : '' }}">
                 <span class="material-symbols-rounded" style="font-size:22px">analytics</span>
-                <span>التقارير التحليلية</span>
+                <span>{{ __('messages.analytics_reports') }}</span>
             </a>
         </div>
 
@@ -120,7 +120,7 @@
                     </a>
                     <a href="{{ route('staff.roles') }}" class="md-nav-item {{ request()->routeIs('staff.roles') ? 'md-nav-item-active' : '' }}">
                         <span class="material-symbols-rounded" style="font-size:22px">admin_panel_settings</span>
-                        <span>إدارة الصلاحيات</span>
+                        <span>{{ __('messages.roles_management') }}</span>
                     </a>
                 @endif
 
@@ -133,7 +133,7 @@
 
                 <a href="{{ route('settings.index') }}" class="md-nav-item {{ request()->routeIs('settings.*') ? 'md-nav-item-active' : '' }}">
                     <span class="material-symbols-rounded" style="font-size:22px">settings</span>
-                    <span>الإعدادات</span>
+                    <span>{{ __('messages.settings') }}</span>
                 </a>
             </div>
         @endif

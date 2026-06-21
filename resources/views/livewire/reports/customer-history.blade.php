@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="text-end">
-                <p class="text-label-sm text-primary uppercase tracking-widest mb-1">إجمالي المعاملات</p>
+                <p class="text-label-sm text-primary uppercase tracking-widest mb-1">{{ __('messages.total_transactions') }}</p>
                 <h3 class="text-display text-on-onyx">{{ count($history) }}</h3>
             </div>
         </div>
@@ -47,19 +47,19 @@
                     </div>
 
                     <div class="md-card-filled p-4">
-                        <p class="text-label-sm text-on-surface-variant uppercase tracking-widest mb-3">الأعمال المنفّذة</p>
+                        <p class="text-label-sm text-on-surface-variant uppercase tracking-widest mb-3">{{ __('messages.works_done') }}</p>
                         @forelse($card->repairTasks ?? [] as $task)
                             <div class="flex items-start gap-3 py-1.5 border-b last:border-0" style="border-color:var(--md-outline-variant)">
                                 <span class="material-symbols-rounded text-primary mt-0.5" style="font-size:16px">check_circle</span>
                                 <div class="flex-1">
                                     <p class="text-label text-on-surface">{{ $task->task_description }}</p>
-                                    <p class="text-label-sm text-on-surface-variant">بواسطة: {{ $task->technician?->name }}
-                                        @if($task->start_time && $task->end_time) · {{ $task->start_time->diffInMinutes($task->end_time) }} دقيقة @endif
+                                    <p class="text-label-sm text-on-surface-variant">{{ __('messages.by_label') }} {{ $task->technician?->name }}
+                                        @if($task->start_time && $task->end_time) · {{ $task->start_time->diffInMinutes($task->end_time) }} {{ __('messages.minutes_short') }} @endif
                                     </p>
                                 </div>
                             </div>
                         @empty
-                            <p class="text-label text-on-surface-variant">لا يوجد سجل تقني مفصّل لهذا الكرت.</p>
+                            <p class="text-label text-on-surface-variant">{{ __('messages.no_tech_log') }}</p>
                         @endforelse
                     </div>
 
@@ -72,7 +72,7 @@
                     @endif
                 </div>
             @empty
-                <div class="text-center py-16 md-card text-on-surface-variant"><p class="text-label uppercase tracking-widest">لا توجد سجلات تاريخية سابقة</p></div>
+                <div class="text-center py-16 md-card text-on-surface-variant"><p class="text-label uppercase tracking-widest">{{ __('messages.no_history_records') }}</p></div>
             @endforelse
         </div>
     @elseif($search)

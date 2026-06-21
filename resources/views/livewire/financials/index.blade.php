@@ -3,14 +3,14 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div class="bg-onyx p-6 rounded-md-lg flex items-center justify-between">
             <div>
-                <p class="text-label-sm text-primary uppercase tracking-widest mb-2">إجمالي التحصيل الفعلي</p>
+                <p class="text-label-sm text-primary uppercase tracking-widest mb-2">{{ __('messages.total_collected_actual') }}</p>
                 <h3 class="text-display text-on-onyx">{{ number_format($totalCollected, 2) }} <small class="text-label text-primary">{{ __('messages.sar') }}</small></h3>
             </div>
             <span class="material-symbols-rounded text-primary" style="font-size:48px">savings</span>
         </div>
         <div class="p-6 rounded-md-lg flex items-center justify-between bg-error-container" style="color:var(--md-on-error-container)">
             <div>
-                <p class="text-label-sm uppercase tracking-widest mb-2">إجمالي المديونيات المتبقية</p>
+                <p class="text-label-sm uppercase tracking-widest mb-2">{{ __('messages.total_outstanding') }}</p>
                 <h3 class="text-display">{{ number_format($totalDebts, 2) }} <small class="text-label">{{ __('messages.sar') }}</small></h3>
             </div>
             <span class="material-symbols-rounded" style="font-size:48px">credit_card_off</span>
@@ -20,18 +20,18 @@
     {{-- Header & filters --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 md-card-elevated p-6">
         <div>
-            <h1 class="text-headline text-on-surface">إدارة المديونيات والتحصيل</h1>
-            <p class="text-body text-on-surface-variant mt-1">تتبّع المبالغ المتبقية في ذمة العملاء وتحصيل الفواتير</p>
+            <h1 class="text-headline text-on-surface">{{ __('messages.debts_collection_mgmt') }}</h1>
+            <p class="text-body text-on-surface-variant mt-1">{{ __('messages.debts_collection_sub') }}</p>
         </div>
         <div class="flex items-center gap-3">
             <select wire:model.live="status" class="md-field !h-11 w-auto rounded-md-md">
-                <option value="all">كافة الكروت المؤرشفة</option>
-                <option value="with_debt">كروت بها مديونية</option>
-                <option value="cleared">كروت مسددة بالكامل</option>
+                <option value="all">{{ __('messages.all_archived_cards') }}</option>
+                <option value="with_debt">{{ __('messages.cards_with_debt') }}</option>
+                <option value="cleared">{{ __('messages.cards_cleared') }}</option>
             </select>
             <div class="relative">
                 <span class="material-symbols-rounded absolute inset-y-0 start-3 flex items-center text-on-surface-variant pointer-events-none" style="font-size:20px">search</span>
-                <input wire:model.live="search" type="text" class="md-field !h-11 ps-11 w-full md:w-64 rounded-md-md" placeholder="بحث بالاسم أو رقم الكرت...">
+                <input wire:model.live="search" type="text" class="md-field !h-11 ps-11 w-full md:w-64 rounded-md-md" placeholder="{{ __('messages.search_name_or_card') }}">
             </div>
         </div>
     </div>
@@ -42,12 +42,12 @@
             <table class="w-full">
                 <thead>
                     <tr class="bg-surface-low border-b" style="border-color:var(--md-outline-variant)">
-                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">التاريخ والكرت</th>
-                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">العميل والبيانات</th>
-                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">الإجمالي</th>
-                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">المسدد</th>
-                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">المتبقي</th>
-                        <th class="px-6 py-4 text-end text-label-sm text-on-surface-variant uppercase tracking-widest">التحصيل</th>
+                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.date_and_card') }}</th>
+                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.customer_and_data') }}</th>
+                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.total_amount') }}</th>
+                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.paid_col') }}</th>
+                        <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.remaining_col') }}</th>
+                        <th class="px-6 py-4 text-end text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.collection_col') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,7 +73,7 @@
                             </td>
                             <td class="px-6 py-5 text-end">
                                 @if($card->remaining_amount > 0)
-                                    <button wire:click="collectRemaining({{ $card->id }})" class="md-icon-btn bg-warning-container" style="color:var(--md-on-warning-container)" title="تحصيل المتبقي">
+                                    <button wire:click="collectRemaining({{ $card->id }})" class="md-icon-btn bg-warning-container" style="color:var(--md-on-warning-container)" title="{{ __('messages.collect_remaining') }}">
                                         <span class="material-symbols-rounded" style="font-size:20px">paid</span>
                                     </button>
                                 @else
@@ -82,7 +82,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="6" class="px-6 py-16 text-center text-body text-on-surface-variant">لا توجد سجلات مالية مطابقة حالياً</td></tr>
+                        <tr><td colspan="6" class="px-6 py-16 text-center text-body text-on-surface-variant">{{ __('messages.no_financial_records') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>

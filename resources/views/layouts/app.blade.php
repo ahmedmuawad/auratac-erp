@@ -44,7 +44,7 @@
 
             <!-- Footer -->
             <footer class="p-4 text-center text-label-sm uppercase tracking-[0.2em] text-on-surface-variant border-t bg-surface" style="border-color:var(--md-outline-variant)">
-                &copy; {{ date('Y') }} {{ get_setting('system_name', 'AURA TAC') }} — {{ get_setting('footer_text', 'Integrated Guns Room Solutions') }}
+                &copy; {{ date('Y') }} Aura Tac - {{ get_setting('footer_text', 'تصميم وتطوير S-Plus') }}
             </footer>
         </main>
     </div>
