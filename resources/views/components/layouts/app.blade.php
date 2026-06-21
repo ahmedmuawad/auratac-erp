@@ -33,7 +33,7 @@
 
             <!-- Footer -->
             <footer class="p-4 text-center text-sm text-slate-500 border-t bg-white">
-                &copy; {{ date('Y') }} برق الرماي - تصميم وتطوير Stop4Web Agency
+                &copy; {{ date('Y') }} Aura Tac - {{ get_setting('footer_text', 'تصميم وتطوير S-Plus') }}
             </footer>
         </main>
     </div>

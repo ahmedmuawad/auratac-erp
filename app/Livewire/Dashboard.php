@@ -70,6 +70,6 @@ class Dashboard extends Component
             'trendData' => $trendData,
             'statusLabels' => $statusLabels,
             'statusData' => $statusData,
-        ]);
+        ])->layout('layouts.app');
     }
 }
