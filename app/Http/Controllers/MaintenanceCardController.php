@@ -40,6 +40,32 @@ class MaintenanceCardController extends Controller
         ], 'repair-card-' . $card->card_number);
     }
 
+    /**
+     * ملصق ستيكر صغير (باركود + رقم الكرت) للصق على القطعة
+     */
+    public function printLabel($id)
+    {
+        $card = MaintenanceCard::with(['customer', 'item'])->findOrFail($id);
+
+        $barcodeService = new BarcodeService();
+        $barcode = preg_replace('/<\?xml.*\?>/i', '', $barcodeService->generate($card->card_number, 1, 32));
+
+        $pdf = PDF::loadView('maintenance.print-label', [
+            'card' => $card,
+            'barcode' => $barcode,
+        ], [], [
+            'mode' => 'utf-8',
+            'format' => [70, 40], // 70mm x 40mm label
+            'margin_left' => 3,
+            'margin_right' => 3,
+            'margin_top' => 3,
+            'margin_bottom' => 3,
+            'temp_dir' => storage_path('app/public'),
+        ]);
+
+        return $pdf->stream('label-' . $card->card_number . '.pdf');
+    }
+
     private function logoPath(): string
     {
         $logo = get_setting('logo_path', 'logo.png');

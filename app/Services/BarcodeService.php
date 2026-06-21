@@ -9,11 +9,11 @@ class BarcodeService
     /**
      * توليد باركود بصيغة SVG لضمان أعلى جودة عند الطباعة
      */
-    public function generate($text)
+    public function generate($text, $widthFactor = 2, $height = 60)
     {
         $generator = new BarcodeGeneratorSVG();
-        
+
         // توليد باركود من نوع Code 128 (الأكثر شيوعاً ودقة)
-        return $generator->getBarcode($text, $generator::TYPE_CODE_128, 2, 60);
+        return $generator->getBarcode($text, $generator::TYPE_CODE_128, $widthFactor, $height);
     }
 }

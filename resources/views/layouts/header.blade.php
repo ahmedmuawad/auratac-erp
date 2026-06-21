@@ -1,16 +1,46 @@
-<header class="md-app-bar">
-    {{-- Start: menu + search --}}
-    <div class="flex items-center gap-3 flex-1">
+<header class="md-app-bar"
+    x-data="{
+        scanOpen: false,
+        qr: null,
+        startScan() {
+            this.scanOpen = true;
+            this.$nextTick(() => {
+                if (typeof Html5Qrcode === 'undefined') return;
+                this.qr = new Html5Qrcode('qr-reader');
+                this.qr.start({ facingMode: 'environment' }, { fps: 10, qrbox: { width: 260, height: 160 } },
+                    (decoded) => { this.openCard(decoded); },
+                    () => {}
+                ).catch(() => {});
+            });
+        },
+        stopScan() {
+            if (this.qr) { this.qr.stop().then(() => this.qr.clear()).catch(() => {}); this.qr = null; }
+            this.scanOpen = false;
+        },
+        openCard(code) {
+            this.stopScan();
+            window.location.href = '{{ route('maintenance.index') }}?search=' + encodeURIComponent(code.trim());
+        }
+    }">
+
+    {{-- Start: menu + scan search --}}
+    <div class="flex items-center gap-2 flex-1">
         <button @click="sidebarOpen = !sidebarOpen" class="md-icon-btn md:hidden" aria-label="القائمة">
             <span class="material-symbols-rounded">menu</span>
         </button>
 
-        <div class="relative max-w-md w-full hidden sm:block">
-            <span class="material-symbols-rounded absolute inset-y-0 start-3 flex items-center text-on-surface-variant pointer-events-none" style="font-size:20px">search</span>
-            <input type="text"
+        {{-- Quick scan box: a USB/Bluetooth scanner types the card number + Enter --}}
+        <form method="GET" action="{{ route('maintenance.index') }}" class="relative max-w-md w-full hidden sm:block">
+            <span class="material-symbols-rounded absolute inset-y-0 start-3 flex items-center text-on-surface-variant pointer-events-none" style="font-size:20px">qr_code_scanner</span>
+            <input type="text" name="search" autocomplete="off"
                    class="block w-full ps-11 pe-4 h-10 rounded-md-xl bg-surface-container text-on-surface text-body placeholder:text-on-surface-variant border-none focus:bg-surface-high focus:ring-2 focus:ring-primary/30 transition-all"
-                   placeholder="{{ __('messages.search_placeholder') }}">
-        </div>
+                   placeholder="{{ __('messages.scan_or_search') }}">
+        </form>
+
+        {{-- Camera scan (mobile) --}}
+        <button type="button" @click="startScan()" class="md-icon-btn" aria-label="{{ __('messages.scan_camera') }}" title="{{ __('messages.scan_camera') }}">
+            <span class="material-symbols-rounded">photo_camera</span>
+        </button>
     </div>
 
     {{-- End: language, notifications, profile --}}
@@ -53,6 +83,24 @@
                         {{ __('messages.logout') }}
                     </button>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    {{-- Camera scan modal --}}
+    <div x-show="scanOpen" x-cloak class="fixed inset-0 z-[80] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-onyx/70 backdrop-blur-sm" @click="stopScan()"></div>
+        <div class="relative bg-surface rounded-md-xl shadow-md-4 w-full max-w-md overflow-hidden">
+            <div class="p-5 border-b flex items-center justify-between" style="border-color:var(--md-outline-variant)">
+                <h3 class="text-title text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-rounded text-primary">qr_code_scanner</span>
+                    {{ __('messages.scan_camera') }}
+                </h3>
+                <button type="button" @click="stopScan()" class="md-icon-btn"><span class="material-symbols-rounded">close</span></button>
+            </div>
+            <div class="p-5">
+                <div id="qr-reader" class="w-full rounded-md-md overflow-hidden"></div>
+                <p class="text-label-sm text-on-surface-variant text-center mt-3">{{ __('messages.point_camera_barcode') }}</p>
             </div>
         </div>
     </div>

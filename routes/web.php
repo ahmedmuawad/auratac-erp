@@ -83,6 +83,10 @@ Route::get('maintenance/print-repair/{id}', [MaintenanceCardController::class, '
     ->middleware(['auth', 'verified'])
     ->name('maintenance.print-repair');
 
+Route::get('maintenance/print-label/{id}', [MaintenanceCardController::class, 'printLabel'])
+    ->middleware(['auth', 'verified'])
+    ->name('maintenance.print-label');
+
 Route::get('login', Login::class)->name('login')->middleware('guest');
 
 Route::post('logout', function () {

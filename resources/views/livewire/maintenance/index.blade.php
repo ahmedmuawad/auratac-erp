@@ -62,6 +62,9 @@
                         <a href="{{ route('maintenance.print-repair', $card->id) }}" target="_blank" class="md-icon-btn" title="{{ __('messages.repair_card_print') }}">
                             <span class="material-symbols-rounded" style="font-size:20px">build_circle</span>
                         </a>
+                        <a href="{{ route('maintenance.print-label', $card->id) }}" target="_blank" class="md-icon-btn" title="{{ __('messages.print_label') }}">
+                            <span class="material-symbols-rounded" style="font-size:20px">label</span>
+                        </a>
                         <button wire:click="edit({{ $card->id }})" class="md-icon-btn" title="{{ __('messages.edit') }}">
                             <span class="material-symbols-rounded" style="font-size:20px">edit</span>
                         </button>
