@@ -62,6 +62,7 @@ class Index extends Component
                 'username' => $this->username,
                 'phone' => $this->phone,
                 'role' => $this->role,
+                'role_id' => Role::where('name', $this->role)->first()?->id,
             ];
             if ($this->password) {
                 $data['password'] = Hash::make($this->password);
