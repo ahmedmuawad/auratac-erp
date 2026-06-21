@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   AURA TAC — Material Design 3 Token System
+   Seed: Bronze #8A6A3D  ·  Neutral: warm onyx
+   ============================================================ */
+:root {
+    /* Primary (Bronze) */
+    --md-primary: #8A6A3D;
+    --md-on-primary: #FFFFFF;
+    --md-primary-container: #F3E3C6;
+    --md-on-primary-container: #2E1F08;
+
+    /* Secondary (warm taupe) */
+    --md-secondary: #6E5C45;
+    --md-on-secondary: #FFFFFF;
+    --md-secondary-container: #F7E7D2;
+    --md-on-secondary-container: #261A0C;
+
+    /* Tertiary (muted forest, nod to the craft) */
+    --md-tertiary: #4E6354;
+    --md-on-tertiary: #FFFFFF;
+    --md-tertiary-container: #D1E8D6;
+    --md-on-tertiary-container: #0B1F14;
+
+    /* Error */
+    --md-error: #BA1A1A;
+    --md-on-error: #FFFFFF;
+    --md-error-container: #FFDAD6;
+    --md-on-error-container: #410002;
+
+    /* Success / Warning (extended roles) */
+    --md-success: #3B6D44;
+    --md-success-container: #C7E9CC;
+    --md-on-success-container: #0A2113;
+    --md-warning: #8A5A00;
+    --md-warning-container: #FFDDB0;
+    --md-on-warning-container: #2C1700;
+
+    /* Neutral surfaces (warm) */
+    --md-background: #F8F6F1;
+    --md-on-background: #1E1B16;
+    --md-surface: #FFFDF8;
+    --md-on-surface: #1E1B16;
+    --md-surface-variant: #ECE1CF;
+    --md-on-surface-variant: #4D4639;
+    --md-surface-container-low: #F8F2E8;
+    --md-surface-container: #F3ECE0;
+    --md-surface-container-high: #EDE6DA;
+    --md-surface-container-highest: #E7E0D4;
+    --md-outline: #807667;
+    --md-outline-variant: #D2C6B4;
+
+    /* Aura Tac onyx (dark navigation drawer surfaces) */
+    --md-onyx: #16130F;
+    --md-onyx-surface: #211D17;
+    --md-on-onyx: #F3EDE2;
+    --md-on-onyx-variant: #A89E8E;
+
+    /* Shape scale */
+    --md-shape-xs: 4px;
+    --md-shape-sm: 8px;
+    --md-shape-md: 12px;
+    --md-shape-lg: 16px;
+    --md-shape-xl: 28px;
+
+    /* Motion */
+    --md-ease: cubic-bezier(0.2, 0, 0, 1);
+}
+
+@layer base {
+    body {
+        font-family: 'Cairo', 'Roboto', system-ui, sans-serif;
+        background-color: var(--md-background);
+        color: var(--md-on-background);
+    }
+    /* Material 3 type scale helpers (Arabic-tuned line heights) */
+    .text-display   { font-size: 2.25rem; line-height: 2.75rem; font-weight: 700; letter-spacing: -0.01em; }
+    .text-headline  { font-size: 1.5rem;  line-height: 2rem;    font-weight: 700; }
+    .text-title-lg  { font-size: 1.25rem; line-height: 1.75rem; font-weight: 600; }
+    .text-title     { font-size: 1rem;    line-height: 1.5rem;  font-weight: 600; }
+    .text-body      { font-size: 0.9375rem; line-height: 1.5rem; font-weight: 400; }
+    .text-label     { font-size: 0.8125rem; line-height: 1.25rem; font-weight: 500; letter-spacing: 0.01em; }
+    .text-label-sm  { font-size: 0.6875rem; line-height: 1rem; font-weight: 600; letter-spacing: 0.04em; }
+}
+
+/* ============================================================
+   Material Components
+   ============================================================ */
+@layer components {
+
+    /* ---- State layer (hover/focus/press overlays) ---- */
+    .md-state { position: relative; overflow: hidden; isolation: isolate; }
+    .md-state::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: currentColor;
+        opacity: 0;
+        transition: opacity 0.15s var(--md-ease);
+        pointer-events: none;
+        z-index: -1;
+    }
+    .md-state:hover::after { opacity: 0.08; }
+    .md-state:focus-visible::after { opacity: 0.12; }
+    .md-state:active::after { opacity: 0.12; }
+
+    /* ---- Buttons ---- */
+    .md-btn {
+        @apply inline-flex items-center justify-center gap-2 h-10 px-6 rounded-md-xl text-label font-semibold;
+        transition: box-shadow 0.15s var(--md-ease), background-color 0.15s var(--md-ease);
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+    }
+    .md-btn:active { transform: scale(0.98); }
+    .md-btn-filled   { @apply md-state bg-primary text-on-primary; }
+    .md-btn-filled:hover { @apply shadow-md-1; }
+    .md-btn-tonal    { @apply md-state bg-secondary-container text-on-secondary-container; }
+    .md-btn-outlined { @apply md-state bg-transparent text-primary border; border-color: var(--md-outline-variant); }
+    .md-btn-text     { @apply md-state bg-transparent text-primary px-3; }
+    .md-btn-danger   { @apply md-state bg-error text-on-error; }
+
+    /* ---- FAB / Icon buttons ---- */
+    .md-icon-btn {
+        @apply md-state inline-flex items-center justify-center w-10 h-10 rounded-full text-on-surface-variant;
+        cursor: pointer;
+    }
+    .md-fab {
+        @apply md-state inline-flex items-center gap-3 h-14 px-5 rounded-md-lg bg-primary-container text-on-primary-container shadow-md-2 font-semibold;
+        cursor: pointer;
+    }
+
+    /* ---- Cards ---- */
+    .md-card           { @apply bg-surface rounded-md-md border; border-color: var(--md-outline-variant); }
+    .md-card-elevated  { @apply bg-surface rounded-md-md shadow-md-1; }
+    .md-card-filled    { @apply bg-surface-container rounded-md-md; }
+
+    /* ---- Chips ---- */
+    .md-chip {
+        @apply md-state inline-flex items-center gap-1.5 h-8 px-3 rounded-md-sm text-label border;
+        border-color: var(--md-outline-variant);
+        color: var(--md-on-surface-variant);
+        background: transparent;
+    }
+    .md-chip-selected { @apply bg-secondary-container text-on-secondary-container border-transparent; }
+
+    /* ---- Text fields (filled, Material 3) ---- */
+    .md-field {
+        @apply w-full h-12 px-4 rounded-t-md-xs bg-surface-container text-on-surface text-body;
+        border: none;
+        border-bottom: 1px solid var(--md-outline);
+        transition: border-color 0.15s var(--md-ease), background-color 0.15s var(--md-ease);
+        outline: none;
+    }
+    .md-field:hover  { background: var(--md-surface-container-high); }
+    .md-field:focus  { border-bottom: 2px solid var(--md-primary); background: var(--md-surface-container-high); }
+    .md-field::placeholder { color: var(--md-on-surface-variant); opacity: 0.7; }
+    textarea.md-field { @apply h-auto py-3; }
+    select.md-field { @apply h-12; }
+    .md-label { @apply block text-label text-on-surface-variant mb-1.5; }
+
+    /* ---- Navigation drawer items (Aura Tac onyx) ---- */
+    .md-nav-item {
+        @apply md-state flex items-center gap-3 h-12 px-4 rounded-md-xl text-label;
+        color: var(--md-on-onyx-variant);
+        transition: background-color 0.15s var(--md-ease), color 0.15s var(--md-ease);
+    }
+    .md-nav-item:hover { color: var(--md-on-onyx); }
+    .md-nav-item-active {
+        background: var(--md-primary);
+        color: var(--md-on-primary);
+        font-weight: 700;
+    }
+    .md-nav-item-active:hover { color: var(--md-on-primary); }
+
+    /* ---- Top app bar ---- */
+    .md-app-bar {
+        @apply h-16 bg-surface flex items-center justify-between px-4 md:px-6 sticky top-0 z-40;
+        border-bottom: 1px solid var(--md-outline-variant);
+    }
+
+    /* ---- Status pills ---- */
+    .md-status { @apply inline-flex items-center gap-1.5 h-7 px-3 rounded-md-sm text-label-sm; }
+}
+
+/* Custom scrollbar (retoned to bronze) */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(138, 106, 61, 0.25); border-radius: 10px; }
+.custom-scrollbar:hover::-webkit-scrollbar-thumb { background: rgba(138, 106, 61, 0.45); }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
