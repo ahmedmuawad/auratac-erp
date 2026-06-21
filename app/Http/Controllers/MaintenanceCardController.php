@@ -42,7 +42,10 @@ class MaintenanceCardController extends Controller
 
     private function logoPath(): string
     {
-        return public_path('logo.png');
+        $logo = get_setting('logo_path', 'logo.png');
+        $path = public_path($logo);
+
+        return is_file($path) ? $path : public_path('logo.png');
     }
 
     private function renderPdf(string $view, MaintenanceCard $card, array $extra, string $filename)
