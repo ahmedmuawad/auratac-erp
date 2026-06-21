@@ -6,10 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ get_setting('system_name', 'Barq Alramay') }}</title>
 
-    <!-- Fonts (Cairo + Roboto imported in app.css) & Material Symbols -->
+    <!-- Fonts: Cairo/Roboto via app.css @import; Material Symbols self-hosted (app.css @font-face) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
 
     <!-- CSS / JS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
