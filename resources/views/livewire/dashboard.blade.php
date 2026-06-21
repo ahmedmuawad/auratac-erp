@@ -54,54 +54,47 @@
                     <h3 class="text-title-lg text-on-surface">{{ __('messages.revenue_summary') }}</h3>
                     <span class="md-status bg-success-container text-on-success-container">{{ __('messages.this_month') }}: {{ number_format($deliveredThisMonth, 0) }} {{ __('messages.sar') }}</span>
                 </div>
-                <div style="height:280px" x-data x-init="
-                    new Chart($refs.trend, {
-                        type: 'bar',
-                        data: {
-                            labels: @js($trendLabels),
-                            datasets: [{
-                                label: @js(__('messages.collection_col')),
-                                data: @js($trendData),
-                                backgroundColor: '#8A6A3D',
-                                borderRadius: 6,
-                                maxBarThickness: 38
-                            }]
-                        },
-                        options: {
-                            responsive: true, maintainAspectRatio: false,
-                            plugins: { legend: { display: false } },
-                            scales: {
-                                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#807667' } },
-                                x: { grid: { display: false }, ticks: { color: '#807667' } }
-                            }
-                        }
-                    });
-                ">
-                    <canvas x-ref="trend"></canvas>
+                @php
+                    $trendCfg = [
+                        'type' => 'bar',
+                        'data' => ['labels' => $trendLabels, 'datasets' => [[
+                            'label' => __('messages.collection_col'), 'data' => $trendData,
+                            'backgroundColor' => '#8A6A3D', 'borderRadius' => 6, 'maxBarThickness' => 38,
+                        ]]],
+                        'options' => [
+                            'responsive' => true, 'maintainAspectRatio' => false,
+                            'plugins' => ['legend' => ['display' => false]],
+                            'scales' => [
+                                'y' => ['beginAtZero' => true, 'grid' => ['color' => 'rgba(0,0,0,0.06)'], 'ticks' => ['color' => '#807667']],
+                                'x' => ['grid' => ['display' => false], 'ticks' => ['color' => '#807667']],
+                            ],
+                        ],
+                    ];
+                @endphp
+                <div style="height:280px">
+                    <canvas data-chart='@json($trendCfg, JSON_HEX_APOS|JSON_HEX_QUOT)'></canvas>
                 </div>
             </div>
 
             {{-- Status doughnut --}}
             <div class="md-card-elevated p-6">
                 <h3 class="text-title-lg text-on-surface mb-4">{{ __('messages.maintenance_cards') }}</h3>
-                <div style="height:280px" x-data x-init="
-                    new Chart($refs.statusChart, {
-                        type: 'doughnut',
-                        data: {
-                            labels: @js($statusLabels),
-                            datasets: [{
-                                data: @js($statusData),
-                                backgroundColor: ['#8A5A00','#8A6A3D','#B8860B','#4E6354','#3B6D44','#211D17'],
-                                borderWidth: 0
-                            }]
-                        },
-                        options: {
-                            responsive: true, maintainAspectRatio: false, cutout: '62%',
-                            plugins: { legend: { position: 'bottom', labels: { color: '#4D4639', font: { family: 'Cairo' }, boxWidth: 12, padding: 10 } } }
-                        }
-                    });
-                ">
-                    <canvas x-ref="statusChart"></canvas>
+                @php
+                    $statusCfg = [
+                        'type' => 'doughnut',
+                        'data' => ['labels' => $statusLabels, 'datasets' => [[
+                            'data' => $statusData,
+                            'backgroundColor' => ['#8A5A00', '#8A6A3D', '#B8860B', '#4E6354', '#3B6D44', '#211D17'],
+                            'borderWidth' => 0,
+                        ]]],
+                        'options' => [
+                            'responsive' => true, 'maintainAspectRatio' => false, 'cutout' => '62%',
+                            'plugins' => ['legend' => ['position' => 'bottom', 'labels' => ['color' => '#4D4639', 'boxWidth' => 12, 'padding' => 10]]],
+                        ],
+                    ];
+                @endphp
+                <div style="height:280px">
+                    <canvas data-chart='@json($statusCfg, JSON_HEX_APOS|JSON_HEX_QUOT)'></canvas>
                 </div>
             </div>
         </div>

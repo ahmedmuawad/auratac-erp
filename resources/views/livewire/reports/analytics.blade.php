@@ -39,55 +39,49 @@
         {{-- Monthly revenue (6 months) --}}
         <div class="lg:col-span-2 md-card-elevated p-6">
             <h3 class="text-title-lg text-on-surface mb-4">{{ __('messages.revenue_summary') }} — 6 {{ __('messages.this_month') }}</h3>
-            <div style="height:300px" wire:key="chart-monthly-{{ md5(json_encode($monthlyRevenue)) }}" x-data x-init="
-                new Chart($refs.monthly, {
-                    type: 'line',
-                    data: {
-                        labels: @js($monthlyLabels),
-                        datasets: [{
-                            label: @js(__('messages.revenue_summary')),
-                            data: @js($monthlyRevenue),
-                            borderColor: '#8A6A3D',
-                            backgroundColor: 'rgba(138,106,61,0.12)',
-                            fill: true, tension: 0.35, borderWidth: 3,
-                            pointBackgroundColor: '#8A6A3D', pointRadius: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { display: false } },
-                        scales: {
-                            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#807667' } },
-                            x: { grid: { display: false }, ticks: { color: '#807667' } }
-                        }
-                    }
-                });
-            ">
-                <canvas x-ref="monthly"></canvas>
+            @php
+                $monthlyCfg = [
+                    'type' => 'line',
+                    'data' => ['labels' => $monthlyLabels, 'datasets' => [[
+                        'label' => __('messages.revenue_summary'), 'data' => $monthlyRevenue,
+                        'borderColor' => '#8A6A3D', 'backgroundColor' => 'rgba(138,106,61,0.12)',
+                        'fill' => true, 'tension' => 0.35, 'borderWidth' => 3,
+                        'pointBackgroundColor' => '#8A6A3D', 'pointRadius' => 4,
+                    ]]],
+                    'options' => [
+                        'responsive' => true, 'maintainAspectRatio' => false,
+                        'plugins' => ['legend' => ['display' => false]],
+                        'scales' => [
+                            'y' => ['beginAtZero' => true, 'grid' => ['color' => 'rgba(0,0,0,0.06)'], 'ticks' => ['color' => '#807667']],
+                            'x' => ['grid' => ['display' => false], 'ticks' => ['color' => '#807667']],
+                        ],
+                    ],
+                ];
+            @endphp
+            <div style="height:300px" wire:key="chart-monthly-{{ md5(json_encode($monthlyRevenue)) }}">
+                <canvas data-chart='@json($monthlyCfg, JSON_HEX_APOS|JSON_HEX_QUOT)'></canvas>
             </div>
         </div>
 
         {{-- Status doughnut --}}
         <div class="md-card-elevated p-6">
             <h3 class="text-title-lg text-on-surface mb-4">{{ __('messages.maintenance_cards') }}</h3>
-            <div style="height:300px" wire:key="chart-status-{{ md5(json_encode($statusData)) }}" x-data x-init="
-                new Chart($refs.statusChart, {
-                    type: 'doughnut',
-                    data: {
-                        labels: @js($statusLabels),
-                        datasets: [{
-                            data: @js($statusData),
-                            backgroundColor: ['#8A5A00','#8A6A3D','#B8860B','#4E6354','#3B6D44','#211D17'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true, maintainAspectRatio: false, cutout: '60%',
-                        plugins: { legend: { position: 'bottom', labels: { color: '#4D4639', font: { family: 'Cairo' }, boxWidth: 12, padding: 8 } } }
-                    }
-                });
-            ">
-                <canvas x-ref="statusChart"></canvas>
+            @php
+                $statusCfg = [
+                    'type' => 'doughnut',
+                    'data' => ['labels' => $statusLabels, 'datasets' => [[
+                        'data' => $statusData,
+                        'backgroundColor' => ['#8A5A00', '#8A6A3D', '#B8860B', '#4E6354', '#3B6D44', '#211D17'],
+                        'borderWidth' => 0,
+                    ]]],
+                    'options' => [
+                        'responsive' => true, 'maintainAspectRatio' => false, 'cutout' => '60%',
+                        'plugins' => ['legend' => ['position' => 'bottom', 'labels' => ['color' => '#4D4639', 'boxWidth' => 12, 'padding' => 8]]],
+                    ],
+                ];
+            @endphp
+            <div style="height:300px" wire:key="chart-status-{{ md5(json_encode($statusData)) }}">
+                <canvas data-chart='@json($statusCfg, JSON_HEX_APOS|JSON_HEX_QUOT)'></canvas>
             </div>
         </div>
     </div>
@@ -95,29 +89,25 @@
     {{-- Technician performance chart --}}
     <div class="md-card-elevated p-6">
         <h3 class="text-title-lg text-on-surface mb-4">{{ __('messages.technician_performance') }}</h3>
-        <div style="height:280px" wire:key="chart-tech-{{ md5(json_encode($techCards)) }}" x-data x-init="
-            new Chart($refs.techChart, {
-                type: 'bar',
-                data: {
-                    labels: @js($techNames),
-                    datasets: [{
-                        label: @js(__('messages.cards_done')),
-                        data: @js($techCards),
-                        backgroundColor: '#4E6354',
-                        borderRadius: 6, maxBarThickness: 46
-                    }]
-                },
-                options: {
-                    responsive: true, maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#807667', precision: 0 } },
-                        x: { grid: { display: false }, ticks: { color: '#807667' } }
-                    }
-                }
-            });
-        ">
-            <canvas x-ref="techChart"></canvas>
+        @php
+            $techCfg = [
+                'type' => 'bar',
+                'data' => ['labels' => $techNames, 'datasets' => [[
+                    'label' => __('messages.cards_done'), 'data' => $techCards,
+                    'backgroundColor' => '#4E6354', 'borderRadius' => 6, 'maxBarThickness' => 46,
+                ]]],
+                'options' => [
+                    'responsive' => true, 'maintainAspectRatio' => false,
+                    'plugins' => ['legend' => ['display' => false]],
+                    'scales' => [
+                        'y' => ['beginAtZero' => true, 'grid' => ['color' => 'rgba(0,0,0,0.06)'], 'ticks' => ['color' => '#807667', 'precision' => 0]],
+                        'x' => ['grid' => ['display' => false], 'ticks' => ['color' => '#807667']],
+                    ],
+                ],
+            ];
+        @endphp
+        <div style="height:280px" wire:key="chart-tech-{{ md5(json_encode($techCards)) }}">
+            <canvas data-chart='@json($techCfg, JSON_HEX_APOS|JSON_HEX_QUOT)'></canvas>
         </div>
     </div>
 

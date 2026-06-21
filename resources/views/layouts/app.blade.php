@@ -12,6 +12,7 @@
 
     <!-- Charts (self-hosted) -->
     <script src="{{ asset('js/chart.umd.min.js') }}"></script>
+    <script src="{{ asset('js/charts-init.js') }}"></script>
 
     <!-- CSS / JS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])

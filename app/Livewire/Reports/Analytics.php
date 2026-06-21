@@ -77,6 +77,8 @@ class Analytics extends Component
             $this->statusLabels[] = __('messages.' . $st);
             $this->statusData[] = (int) ($counts[$st] ?? 0);
         }
+
+        $this->dispatch('charts-updated');
     }
 
     public function render()
