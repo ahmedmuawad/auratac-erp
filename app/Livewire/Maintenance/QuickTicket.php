@@ -116,8 +116,8 @@ class QuickTicket extends Component
             'payment_status' => ($paid >= $total_cost && $total_cost > 0) ? 'paid' : ($paid > 0 ? 'partially_paid' : 'unpaid'),
         ]);
 
-        session()->flash('success', 'تم تسجيل الكرت بنجاح!');
-        return redirect()->route('maintenance.print', $card->id);
+        session()->flash('success', __('messages.card_added_success'));
+        return redirect()->route('maintenance.created', $card->id);
     }
 
     public function render()

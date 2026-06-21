@@ -41,6 +41,20 @@ class MaintenanceCardController extends Controller
     }
 
     /**
+     * صفحة تأكيد إنشاء الكرت — تطبع الملصق تلقائياً وتوفّر روابط الطباعة الأخرى
+     */
+    public function ticketCreated($id)
+    {
+        $card = MaintenanceCard::with(['customer', 'item'])->findOrFail($id);
+        $barcode = preg_replace('/<\?xml.*\?>/i', '', (new BarcodeService())->generate($card->card_number, 2, 50));
+
+        return view('maintenance.ticket-created', [
+            'card' => $card,
+            'barcode' => $barcode,
+        ]);
+    }
+
+    /**
      * ملصق ستيكر صغير (باركود + رقم الكرت) للصق على القطعة
      */
     public function printLabel($id)
