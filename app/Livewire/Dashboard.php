@@ -2,7 +2,10 @@
 
 namespace App\Livewire;
 
+use App\Models\Customer;
+use App\Models\Item;
 use App\Models\MaintenanceCard;
+use Illuminate\Support\Carbon;
 use Livewire\Component;
 
 class Dashboard extends Component
@@ -25,6 +28,34 @@ class Dashboard extends Component
             ->whereYear('delivered_at', now()->year)
             ->sum('final_total_cost');
 
+        // Extra KPIs
+        $kpis = [
+            ['label' => __('messages.customers'),          'value' => Customer::count(),                        'icon' => 'groups'],
+            ['label' => __('messages.items_directory'),    'value' => Item::count(),                            'icon' => 'inventory_2'],
+            ['label' => __('messages.total_cards'),        'value' => MaintenanceCard::count(),                 'icon' => 'description'],
+            ['label' => __('messages.total_outstanding'),  'value' => number_format((float) MaintenanceCard::sum('remaining_amount')) , 'icon' => 'credit_card_off', 'suffix' => __('messages.sar')],
+        ];
+
+        // 7-day delivered revenue trend
+        $trendLabels = [];
+        $trendData = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $day = Carbon::today()->subDays($i);
+            $trendLabels[] = $day->translatedFormat('D');
+            $trendData[] = (float) MaintenanceCard::where('status', 'delivered')
+                ->whereDate('delivered_at', $day)
+                ->sum('final_total_cost');
+        }
+
+        // Status distribution (for doughnut)
+        $statusOrder = ['pending', 'in_progress', 'waiting_parts', 'ready_for_qa', 'ready', 'delivered'];
+        $statusLabels = [];
+        $statusData = [];
+        foreach ($statusOrder as $st) {
+            $statusLabels[] = __('messages.' . $st);
+            $statusData[] = (int) ($counts[$st] ?? 0);
+        }
+
         $recentCards = MaintenanceCard::with(['customer', 'item'])
             ->latest()
             ->take(6)
@@ -32,8 +63,13 @@ class Dashboard extends Component
 
         return view('livewire.dashboard', [
             'metrics' => $metrics,
+            'kpis' => $kpis,
             'deliveredThisMonth' => $deliveredThisMonth,
             'recentCards' => $recentCards,
+            'trendLabels' => $trendLabels,
+            'trendData' => $trendData,
+            'statusLabels' => $statusLabels,
+            'statusData' => $statusData,
         ]);
     }
 }

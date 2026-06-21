@@ -34,7 +34,94 @@
         </div>
     </div>
 
-    {{-- Technician performance --}}
+    {{-- Charts --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {{-- Monthly revenue (6 months) --}}
+        <div class="lg:col-span-2 md-card-elevated p-6">
+            <h3 class="text-title-lg text-on-surface mb-4">{{ __('messages.revenue_summary') }} — 6 {{ __('messages.this_month') }}</h3>
+            <div style="height:300px" wire:key="chart-monthly-{{ md5(json_encode($monthlyRevenue)) }}" x-data x-init="
+                new Chart($refs.monthly, {
+                    type: 'line',
+                    data: {
+                        labels: @js($monthlyLabels),
+                        datasets: [{
+                            label: @js(__('messages.revenue_summary')),
+                            data: @js($monthlyRevenue),
+                            borderColor: '#8A6A3D',
+                            backgroundColor: 'rgba(138,106,61,0.12)',
+                            fill: true, tension: 0.35, borderWidth: 3,
+                            pointBackgroundColor: '#8A6A3D', pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#807667' } },
+                            x: { grid: { display: false }, ticks: { color: '#807667' } }
+                        }
+                    }
+                });
+            ">
+                <canvas x-ref="monthly"></canvas>
+            </div>
+        </div>
+
+        {{-- Status doughnut --}}
+        <div class="md-card-elevated p-6">
+            <h3 class="text-title-lg text-on-surface mb-4">{{ __('messages.maintenance_cards') }}</h3>
+            <div style="height:300px" wire:key="chart-status-{{ md5(json_encode($statusData)) }}" x-data x-init="
+                new Chart($refs.statusChart, {
+                    type: 'doughnut',
+                    data: {
+                        labels: @js($statusLabels),
+                        datasets: [{
+                            data: @js($statusData),
+                            backgroundColor: ['#8A5A00','#8A6A3D','#B8860B','#4E6354','#3B6D44','#211D17'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false, cutout: '60%',
+                        plugins: { legend: { position: 'bottom', labels: { color: '#4D4639', font: { family: 'Cairo' }, boxWidth: 12, padding: 8 } } }
+                    }
+                });
+            ">
+                <canvas x-ref="statusChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    {{-- Technician performance chart --}}
+    <div class="md-card-elevated p-6">
+        <h3 class="text-title-lg text-on-surface mb-4">{{ __('messages.technician_performance') }}</h3>
+        <div style="height:280px" wire:key="chart-tech-{{ md5(json_encode($techCards)) }}" x-data x-init="
+            new Chart($refs.techChart, {
+                type: 'bar',
+                data: {
+                    labels: @js($techNames),
+                    datasets: [{
+                        label: @js(__('messages.cards_done')),
+                        data: @js($techCards),
+                        backgroundColor: '#4E6354',
+                        borderRadius: 6, maxBarThickness: 46
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { color: '#807667', precision: 0 } },
+                        x: { grid: { display: false }, ticks: { color: '#807667' } }
+                    }
+                }
+            });
+        ">
+            <canvas x-ref="techChart"></canvas>
+        </div>
+    </div>
+
+    {{-- Technician table --}}
     <div class="md-card-elevated overflow-hidden">
         <div class="p-6 border-b flex justify-between items-center" style="border-color:var(--md-outline-variant)">
             <h3 class="text-title-lg text-on-surface">{{ __('messages.technician_performance') }}</h3>
@@ -47,7 +134,6 @@
                         <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.technician_col') }}</th>
                         <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.cards_done') }}</th>
                         <th class="px-6 py-4 text-start text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.work_hours') }}</th>
-                        <th class="px-6 py-4 text-end text-label-sm text-on-surface-variant uppercase tracking-widest">{{ __('messages.performance') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,17 +147,9 @@
                             </td>
                             <td class="px-6 py-5 text-title text-on-surface">{{ $stat['cards_count'] }}</td>
                             <td class="px-6 py-5 text-label text-on-surface-variant">{{ round($stat['total_duration'] / 60, 1) }} {{ __('messages.hour_unit') }}</td>
-                            <td class="px-6 py-5">
-                                <div class="flex items-center justify-end gap-2">
-                                    <div class="w-24 h-2 bg-surface-container rounded-full overflow-hidden">
-                                        <div class="h-full bg-primary rounded-full" style="width: {{ min($stat['cards_count'] * 10, 100) }}%"></div>
-                                    </div>
-                                    <span class="text-label-sm text-primary">{{ min($stat['cards_count'] * 10, 100) }}%</span>
-                                </div>
-                            </td>
                         </tr>
                     @empty
-                        <tr><td colspan="4" class="px-6 py-16 text-center text-body text-on-surface-variant">{{ __('messages.no_data_range') }}</td></tr>
+                        <tr><td colspan="3" class="px-6 py-16 text-center text-body text-on-surface-variant">{{ __('messages.no_data_range') }}</td></tr>
                     @endforelse
                 </tbody>
             </table>

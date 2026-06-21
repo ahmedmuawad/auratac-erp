@@ -10,6 +10,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+    <!-- Charts (self-hosted) -->
+    <script src="{{ asset('js/chart.umd.min.js') }}"></script>
+
     <!-- CSS / JS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
