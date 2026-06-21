@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Notifications\CardStageNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Notification;
 
 class MaintenanceCard extends Model
 {
@@ -123,5 +125,19 @@ class MaintenanceCard extends Model
     public function statusMeta(): array
     {
         return static::statuses()[$this->status] ?? ['label' => $this->status, 'role' => 'secondary'];
+    }
+
+    /**
+     * إشعار موظفي الأدوار المعنية (والمدير دائماً) بمرحلة الكرت
+     */
+    public function notifyRoles(array $roles, string $messageKey, string $icon = 'notifications'): void
+    {
+        $users = User::where(function ($q) use ($roles) {
+            $q->whereIn('role', $roles)->orWhere('role', 'manager');
+        })->get();
+
+        if ($users->isNotEmpty()) {
+            Notification::send($users, new CardStageNotification($this->id, $this->card_number, $messageKey, $icon));
+        }
     }
 }

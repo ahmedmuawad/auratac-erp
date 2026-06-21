@@ -75,6 +75,11 @@ class TechnicianPanel extends Component
     {
         $card = MaintenanceCard::find($cardId);
         $card->update(['status' => $status]);
+
+        if ($status === 'ready_for_qa') {
+            $card->notifyRoles(['qa'], 'notif_ready_for_qa', 'verified_user');
+        }
+
         session()->flash('success', __('messages.status_updated_to_' . $status));
     }
 

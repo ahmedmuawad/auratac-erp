@@ -49,6 +49,12 @@ class QualityControl extends Component
             'status' => $this->decision === 'passed' ? 'ready' : 'in_progress',
         ]);
 
+        if ($this->decision === 'passed') {
+            $card->notifyRoles(['reception', 'qa'], 'notif_ready_delivery', 'local_shipping');
+        } else {
+            $card->notifyRoles(['technician'], 'notif_qa_rejected', 'cancel');
+        }
+
         $this->showModal = false;
         $this->reset(['selectedCard', 'decision', 'notes']);
         session()->flash('success', $this->decision === 'passed'

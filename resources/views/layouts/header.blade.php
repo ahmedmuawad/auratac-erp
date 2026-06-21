@@ -52,10 +52,7 @@
             <span class="sm:hidden uppercase">{{ app()->getLocale() == 'ar' ? 'EN' : 'AR' }}</span>
         </a>
 
-        <button class="md-icon-btn relative" aria-label="الإشعارات">
-            <span class="material-symbols-rounded">notifications</span>
-            <span class="absolute top-2 end-2 w-2.5 h-2.5 bg-error rounded-full border-2 border-surface"></span>
-        </button>
+        @livewire('notifications-bell')
 
         <div class="w-px h-8 bg-outline-variant mx-1 hidden sm:block"></div>
 

@@ -137,7 +137,7 @@ class Index extends Component
             $count = MaintenanceCard::count() + 1001;
             $card_number = 'BRQ-' . date('Y') . '-' . $count;
 
-            MaintenanceCard::create([
+            $card = MaintenanceCard::create([
                 'card_number' => $card_number,
                 'customer_id' => $this->customer_id,
                 'item_id' => $this->item_id,
@@ -149,6 +149,7 @@ class Index extends Component
                 'admin_notes' => $this->admin_notes,
                 'status' => 'pending',
             ]);
+            $card->notifyRoles(['technician'], 'notif_new_card', 'assignment');
             session()->flash('success', __('messages.card_added_success'));
         }
 
