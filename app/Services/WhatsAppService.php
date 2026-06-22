@@ -65,6 +65,70 @@ class WhatsAppService
     }
 
     /**
+     * Instance connection state: open | connecting | close | null
+     */
+    public function connectionState(array $config): ?string
+    {
+        try {
+            $resp = Http::withHeaders($this->headers($config))->timeout(15)
+                ->get($this->endpoint($config, 'instance/connectionState'));
+            return $resp->json('instance.state');
+        } catch (\Throwable $e) {
+            Log::error('WhatsApp state error: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Connect / fetch QR. Returns ['state'=>?, 'qr'=>?base64].
+     */
+    public function connect(array $config): array
+    {
+        try {
+            $resp = Http::withHeaders($this->headers($config))->timeout(20)
+                ->get($this->endpoint($config, 'instance/connect'));
+            $j = $resp->json() ?? [];
+
+            $qr = $j['base64'] ?? ($j['qrcode']['base64'] ?? ($j['qr'] ?? null));
+            $state = $j['instance']['state'] ?? null;
+
+            return ['state' => $state, 'qr' => $qr];
+        } catch (\Throwable $e) {
+            Log::error('WhatsApp connect error: ' . $e->getMessage());
+            return ['state' => null, 'qr' => null, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Logout / disconnect the instance session.
+     */
+    public function logout(array $config): bool
+    {
+        try {
+            $resp = Http::withHeaders($this->headers($config))->timeout(15)
+                ->delete($this->endpoint($config, 'instance/logout'));
+            return $resp->successful();
+        } catch (\Throwable $e) {
+            Log::error('WhatsApp logout error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    private function headers(array $config): array
+    {
+        $h = ['apikey' => $config['key'] ?? '', 'Content-Type' => 'application/json'];
+        if (filled($config['token'] ?? null)) {
+            $h['Authorization'] = 'Bearer ' . $config['token'];
+        }
+        return $h;
+    }
+
+    private function endpoint(array $config, string $path): string
+    {
+        return rtrim((string) ($config['url'] ?? ''), '/') . '/' . $path . '/' . ($config['instance'] ?? '');
+    }
+
+    /**
      * Core HTTP call to Evolution API with retries.
      */
     private function dispatch(array $config, ?string $phone, string $message): array

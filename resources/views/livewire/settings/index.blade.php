@@ -171,6 +171,39 @@
                         @if (session()->has('wa_error')) <p class="text-label-sm text-error">{{ session('wa_error') }}</p> @endif
                         <p class="text-label-sm text-on-surface-variant">{{ __('messages.wa_hint') }}</p>
                     </div>
+
+                    {{-- Connection / QR / Logout --}}
+                    <div class="md-card-filled p-5 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-label text-on-surface flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-primary"></span> {{ __('messages.wa_connection') }}
+                            </h4>
+                            @if($waState)
+                                <span class="md-status {{ $waState === 'open' ? 'bg-success-container text-on-success-container' : 'bg-warning-container text-on-warning-container' }}">{{ $waState }}</span>
+                            @endif
+                        </div>
+
+                        <div class="flex flex-wrap gap-2">
+                            <button wire:click="checkConnection" wire:loading.attr="disabled" class="md-btn md-btn-tonal">
+                                <span class="material-symbols-rounded" style="font-size:18px">sync</span> {{ __('messages.wa_check_status') }}
+                            </button>
+                            <button wire:click="showQr" wire:loading.attr="disabled" class="md-btn md-btn-tonal">
+                                <span class="material-symbols-rounded" style="font-size:18px">qr_code_2</span> {{ __('messages.wa_show_qr') }}
+                            </button>
+                            <button wire:click="logoutSession" wire:confirm="{{ __('messages.wa_logout_confirm') }}" class="md-btn md-btn-danger">
+                                <span class="material-symbols-rounded" style="font-size:18px">logout</span> {{ __('messages.wa_logout_session') }}
+                            </button>
+                        </div>
+
+                        <div wire:loading wire:target="checkConnection,showQr,logoutSession" class="text-label-sm text-primary">{{ __('messages.processing') }}</div>
+
+                        @if($waQr)
+                            <div class="text-center">
+                                <img src="{{ \Illuminate\Support\Str::startsWith($waQr, 'data:') ? $waQr : 'data:image/png;base64,' . $waQr }}" alt="QR" class="mx-auto w-56 h-56 rounded-md-md border bg-white p-2" style="border-color:var(--md-outline-variant)">
+                                <p class="text-label-sm text-on-surface-variant mt-2">{{ __('messages.wa_scan_qr_hint') }}</p>
+                            </div>
+                        @endif
+                    </div>
                 </div>
 
             @elseif($activeTab == 'general')

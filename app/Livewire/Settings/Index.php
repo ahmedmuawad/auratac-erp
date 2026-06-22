@@ -26,6 +26,8 @@ class Index extends Component
     // WhatsApp (Evolution API) Settings
     public $whatsapp_enabled, $whatsapp_api_url, $whatsapp_api_key, $whatsapp_instance, $whatsapp_token, $whatsapp_country_code;
     public $waTestPhone;
+    public $waState = null;   // open | connecting | close | null
+    public $waQr = null;      // base64 QR image
 
     // General Settings
     public $terms_conditions;
@@ -130,6 +132,47 @@ class Index extends Component
         } else {
             session()->flash('wa_error', $result['message']);
         }
+    }
+
+    protected function waConfig(): array
+    {
+        return [
+            'url'      => $this->whatsapp_api_url,
+            'key'      => $this->whatsapp_api_key,
+            'instance' => $this->whatsapp_instance,
+            'token'    => $this->whatsapp_token,
+            'cc'       => $this->whatsapp_country_code ?: '966',
+        ];
+    }
+
+    public function checkConnection()
+    {
+        $this->waQr = null;
+        $this->waState = (new WhatsAppService())->connectionState($this->waConfig());
+        if (! $this->waState) {
+            session()->flash('wa_error', __('messages.wa_check_failed'));
+        }
+    }
+
+    public function showQr()
+    {
+        $res = (new WhatsAppService())->connect($this->waConfig());
+        $this->waState = $res['state'] ?? $this->waState;
+        $this->waQr = $res['qr'] ?? null;
+
+        if (! $this->waQr && ($this->waState === 'open')) {
+            session()->flash('wa_status', __('messages.wa_already_connected'));
+        } elseif (! $this->waQr) {
+            session()->flash('wa_error', __('messages.wa_qr_failed'));
+        }
+    }
+
+    public function logoutSession()
+    {
+        $ok = (new WhatsAppService())->logout($this->waConfig());
+        $this->waQr = null;
+        $this->waState = $ok ? 'close' : $this->waState;
+        session()->flash($ok ? 'wa_status' : 'wa_error', $ok ? __('messages.wa_logged_out') : __('messages.wa_logout_failed'));
     }
 
     public function render()
