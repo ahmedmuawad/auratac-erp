@@ -24,7 +24,7 @@ class Index extends Component
     public $testPhone;
 
     // WhatsApp (Evolution API) Settings
-    public $whatsapp_enabled, $whatsapp_api_url, $whatsapp_api_key, $whatsapp_instance, $whatsapp_token, $whatsapp_country_code;
+    public $whatsapp_enabled, $whatsapp_api_url, $whatsapp_api_key, $whatsapp_instance, $whatsapp_token, $whatsapp_country_code, $whatsapp_min_gap_seconds;
     public $waTestPhone;
     public $waState = null;   // open | connecting | close | null
     public $waQr = null;      // base64 QR image
@@ -52,6 +52,7 @@ class Index extends Component
         $this->whatsapp_instance = get_setting('whatsapp_instance');
         $this->whatsapp_token = get_setting('whatsapp_token');
         $this->whatsapp_country_code = get_setting('whatsapp_country_code', '966');
+        $this->whatsapp_min_gap_seconds = get_setting('whatsapp_min_gap_seconds', '4');
         $this->terms_conditions = get_setting('terms_conditions');
     }
 
@@ -71,6 +72,7 @@ class Index extends Component
             'whatsapp_instance' => $this->whatsapp_instance,
             'whatsapp_token' => $this->whatsapp_token,
             'whatsapp_country_code' => $this->whatsapp_country_code ?: '966',
+            'whatsapp_min_gap_seconds' => $this->whatsapp_min_gap_seconds === null || $this->whatsapp_min_gap_seconds === '' ? '4' : $this->whatsapp_min_gap_seconds,
             'terms_conditions' => $this->terms_conditions,
         ];
 

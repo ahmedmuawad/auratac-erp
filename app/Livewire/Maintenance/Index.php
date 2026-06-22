@@ -155,9 +155,9 @@ class Index extends Component
                 $card->loadMissing('customer');
                 $wa = app(\App\Services\WhatsAppService::class);
                 if ($wa->isConfigured() && $card->customer?->phone) {
-                    $caption = "عميلنا العزيز {$card->customer->full_name}،\nتم استلام قطعتك بقسم الصيانة - Aura Tac.\nرقم الكرت: {$card->card_number}\nمرفق كرت العمل (يشمل التكلفة). سنبلغك عند الجاهزية.";
+                    $caption = \App\Support\WaMessages::received($card->customer->full_name, $card->card_number);
                     $pdf = app(\App\Services\CardPdfService::class)->workCard($card);
-                    $wa->notifyDocument($card->customer->phone, $pdf, "AuraTac-{$card->card_number}.pdf", $caption);
+                    $wa->notifyDocument($card->customer->phone, $pdf, \App\Support\WaMessages::fileName($card->card_number), $caption);
                 }
             } catch (\Throwable $e) {
                 \Illuminate\Support\Facades\Log::error('Receipt WhatsApp failed: ' . $e->getMessage());

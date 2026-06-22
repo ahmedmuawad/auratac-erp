@@ -54,14 +54,14 @@ class QualityControl extends Component
             $card->loadMissing('customer');
             app(\App\Services\WhatsAppService::class)->notify(
                 $card->customer?->phone,
-                "عميلنا العزيز {$card->customer?->full_name}،\nقطعتك جاهزة للاستلام من Aura Tac.\nرقم الكرت: {$card->card_number}\nبانتظارك. شكراً."
+                \App\Support\WaMessages::ready($card->customer?->full_name ?? '', $card->card_number)
             );
         } else {
             $card->notifyRoles(['technician'], 'notif_qa_rejected', 'cancel');
             $card->loadMissing('customer');
             app(\App\Services\WhatsAppService::class)->notify(
                 $card->customer?->phone,
-                "عميلنا العزيز {$card->customer?->full_name}،\nقطعتك (كرت {$card->card_number}) تحتاج وقتاً إضافياً لضمان أعلى جودة، وسنبلغك فور جاهزيتها. نعتذر عن التأخير ونشكر تفهّمك."
+                \App\Support\WaMessages::delayed($card->customer?->full_name ?? '', $card->card_number)
             );
         }
 

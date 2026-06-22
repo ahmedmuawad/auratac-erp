@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -81,6 +82,7 @@ class WhatsAppService
         ];
 
         try {
+            $this->throttle();
             $resp = Http::withHeaders($this->headers($config))
                 ->connectTimeout(7)->timeout(40)->acceptJson()
                 ->post("{$base}/message/sendMedia/{$config['instance']}", $payload);
@@ -174,6 +176,27 @@ class WhatsAppService
         }
     }
 
+    /**
+     * Space out sends with a small jittered gap to reduce spam heuristics.
+     */
+    private function throttle(): void
+    {
+        $min = (float) get_setting('whatsapp_min_gap_seconds', 4);
+        if ($min <= 0) {
+            return;
+        }
+
+        $last = (float) Cache::get('whatsapp:last_sent', 0);
+        $elapsed = microtime(true) - $last;
+        $wait = ($min - $elapsed) + (mt_rand(0, 1500) / 1000); // + 0..1.5s jitter
+        $wait = max(0, min($wait, $min + 2));                  // cap
+
+        if ($wait > 0) {
+            usleep((int) ($wait * 1_000_000));
+        }
+        Cache::put('whatsapp:last_sent', microtime(true), 120);
+    }
+
     private function headers(array $config): array
     {
         $h = ['apikey' => $config['key'] ?? '', 'Content-Type' => 'application/json'];
@@ -208,6 +231,8 @@ class WhatsAppService
         if (filled($config['token'] ?? null)) {
             $headers['Authorization'] = 'Bearer ' . $config['token'];
         }
+
+        $this->throttle();
 
         $lastError = 'unknown';
         for ($attempt = 1; $attempt <= 2; $attempt++) {

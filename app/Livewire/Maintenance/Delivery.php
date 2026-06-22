@@ -84,7 +84,7 @@ class Delivery extends Component
         $card->loadMissing('customer');
         app(\App\Services\WhatsAppService::class)->notify(
             $card->customer?->phone,
-            "عميلنا العزيز {$card->customer?->full_name}،\nتم تسليم قطعتك من Aura Tac.\nرقم الكرت: {$card->card_number}\nنشكرك على ثقتك ونسعد بخدمتك."
+            \App\Support\WaMessages::delivered($card->customer?->full_name ?? '', $card->card_number)
         );
 
         $this->showModal = false;

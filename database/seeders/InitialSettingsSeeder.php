@@ -72,6 +72,7 @@ class InitialSettingsSeeder extends Seeder
             ['key' => 'whatsapp_instance', 'value' => '', 'group' => 'whatsapp'],
             ['key' => 'whatsapp_token', 'value' => '', 'group' => 'whatsapp'],
             ['key' => 'whatsapp_country_code', 'value' => '966', 'group' => 'whatsapp'],
+            ['key' => 'whatsapp_min_gap_seconds', 'value' => '4', 'group' => 'whatsapp'],
 
             // General Group
             [

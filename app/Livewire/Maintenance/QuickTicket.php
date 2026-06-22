@@ -130,9 +130,9 @@ class QuickTicket extends Component
             if (! $wa->isConfigured()) {
                 return;
             }
-            $caption = "عميلنا العزيز {$name}،\nتم استلام قطعتك بقسم الصيانة - Aura Tac.\nرقم الكرت: {$card->card_number}\nمرفق كرت العمل (يشمل التكلفة). سنبلغك عند الجاهزية. شكراً لثقتك.";
+            $caption = \App\Support\WaMessages::received($name, $card->card_number);
             $pdf = app(\App\Services\CardPdfService::class)->workCard($card);
-            $wa->notifyDocument($phone, $pdf, "AuraTac-{$card->card_number}.pdf", $caption);
+            $wa->notifyDocument($phone, $pdf, \App\Support\WaMessages::fileName($card->card_number), $caption);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::error('Receipt WhatsApp failed: ' . $e->getMessage());
         }
