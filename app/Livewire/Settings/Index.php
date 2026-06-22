@@ -46,7 +46,7 @@ class Index extends Component
         $this->twilio_sid = get_setting('twilio_sid');
         $this->twilio_token = get_setting('twilio_token');
         $this->twilio_from = get_setting('twilio_from');
-        $this->whatsapp_enabled = get_setting('whatsapp_enabled', '0');
+        $this->whatsapp_enabled = get_setting('whatsapp_enabled') == '1';
         $this->whatsapp_api_url = get_setting('whatsapp_api_url');
         $this->whatsapp_api_key = get_setting('whatsapp_api_key');
         $this->whatsapp_instance = get_setting('whatsapp_instance');

@@ -150,6 +150,19 @@ class Index extends Component
                 'status' => 'pending',
             ]);
             $card->notifyRoles(['technician'], 'notif_new_card', 'assignment');
+
+            try {
+                $card->loadMissing('customer');
+                $wa = app(\App\Services\WhatsAppService::class);
+                if ($wa->isConfigured() && $card->customer?->phone) {
+                    $caption = "عميلنا العزيز {$card->customer->full_name}،\nتم استلام قطعتك بقسم الصيانة - Aura Tac.\nرقم الكرت: {$card->card_number}\nمرفق كرت العمل (يشمل التكلفة). سنبلغك عند الجاهزية.";
+                    $pdf = app(\App\Services\CardPdfService::class)->workCard($card);
+                    $wa->notifyDocument($card->customer->phone, $pdf, "AuraTac-{$card->card_number}.pdf", $caption);
+                }
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('Receipt WhatsApp failed: ' . $e->getMessage());
+            }
+
             session()->flash('success', __('messages.card_added_success'));
         }
 

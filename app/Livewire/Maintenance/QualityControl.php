@@ -58,6 +58,11 @@ class QualityControl extends Component
             );
         } else {
             $card->notifyRoles(['technician'], 'notif_qa_rejected', 'cancel');
+            $card->loadMissing('customer');
+            app(\App\Services\WhatsAppService::class)->notify(
+                $card->customer?->phone,
+                "عميلنا العزيز {$card->customer?->full_name}،\nقطعتك (كرت {$card->card_number}) تحتاج وقتاً إضافياً لضمان أعلى جودة، وسنبلغك فور جاهزيتها. نعتذر عن التأخير ونشكر تفهّمك."
+            );
         }
 
         $this->showModal = false;

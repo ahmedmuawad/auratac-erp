@@ -51,7 +51,53 @@ class WhatsAppService
     }
 
     /**
-     * Fire-and-forget: never breaks the request flow.
+     * Send a document (e.g. PDF) using saved settings.
+     */
+    public function sendDocument(?string $phone, string $pdfBytes, string $fileName, string $caption = ''): array
+    {
+        if (! $this->isConfigured()) {
+            return ['success' => false, 'message' => 'WhatsApp not configured/enabled'];
+        }
+        if (blank($phone)) {
+            return ['success' => false, 'message' => 'No phone number'];
+        }
+
+        $cc = get_setting('whatsapp_country_code', '966');
+        $config = [
+            'url' => get_setting('whatsapp_api_url'),
+            'key' => get_setting('whatsapp_api_key'),
+            'instance' => get_setting('whatsapp_instance'),
+            'token' => get_setting('whatsapp_token'),
+        ];
+
+        $base = rtrim((string) $config['url'], '/');
+        $payload = [
+            'number' => $this->normalize($phone, $cc),
+            'mediatype' => 'document',
+            'mimetype' => 'application/pdf',
+            'media' => base64_encode($pdfBytes),
+            'fileName' => $fileName,
+            'caption' => $caption,
+        ];
+
+        try {
+            $resp = Http::withHeaders($this->headers($config))
+                ->connectTimeout(7)->timeout(40)->acceptJson()
+                ->post("{$base}/message/sendMedia/{$config['instance']}", $payload);
+
+            if ($resp->successful()) {
+                return ['success' => true, 'message' => 'Sent'];
+            }
+            Log::warning('WhatsApp document failed', ['status' => $resp->status(), 'body' => $resp->body()]);
+            return ['success' => false, 'message' => 'HTTP ' . $resp->status()];
+        } catch (\Throwable $e) {
+            Log::error('WhatsApp document error: ' . $e->getMessage());
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * Fire-and-forget text: never breaks the request flow.
      */
     public function notify(?string $phone, string $message): void
     {
@@ -61,6 +107,20 @@ class WhatsAppService
             }
         } catch (\Throwable $e) {
             Log::error('WhatsApp notify error: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Fire-and-forget document: never breaks the request flow.
+     */
+    public function notifyDocument(?string $phone, string $pdfBytes, string $fileName, string $caption = ''): void
+    {
+        try {
+            if ($this->isConfigured()) {
+                $this->sendDocument($phone, $pdfBytes, $fileName, $caption);
+            }
+        } catch (\Throwable $e) {
+            Log::error('WhatsApp notifyDocument error: ' . $e->getMessage());
         }
     }
 

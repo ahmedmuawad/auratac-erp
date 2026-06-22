@@ -117,14 +117,25 @@ class QuickTicket extends Component
         ]);
 
         $card->notifyRoles(['technician'], 'notif_new_card', 'assignment');
-
-        app(\App\Services\WhatsAppService::class)->notify(
-            $customer->phone,
-            "عميلنا العزيز {$customer->full_name}،\nتم استلام قطعتك بقسم الصيانة - Aura Tac.\nرقم الكرت: {$card->card_number}\nسنبلغك عند جاهزيتها. شكراً لثقتك."
-        );
+        $this->sendReceiptWhatsApp($card, $customer->phone, $customer->full_name);
 
         session()->flash('success', __('messages.card_added_success'));
         return redirect()->route('maintenance.created', $card->id);
+    }
+
+    protected function sendReceiptWhatsApp($card, $phone, $name): void
+    {
+        try {
+            $wa = app(\App\Services\WhatsAppService::class);
+            if (! $wa->isConfigured()) {
+                return;
+            }
+            $caption = "عميلنا العزيز {$name}،\nتم استلام قطعتك بقسم الصيانة - Aura Tac.\nرقم الكرت: {$card->card_number}\nمرفق كرت العمل (يشمل التكلفة). سنبلغك عند الجاهزية. شكراً لثقتك.";
+            $pdf = app(\App\Services\CardPdfService::class)->workCard($card);
+            $wa->notifyDocument($phone, $pdf, "AuraTac-{$card->card_number}.pdf", $caption);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Receipt WhatsApp failed: ' . $e->getMessage());
+        }
     }
 
     public function render()
