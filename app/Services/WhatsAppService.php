@@ -32,29 +32,47 @@ class WhatsAppService
         }
 
         $base = rtrim(get_setting('whatsapp_api_url'), '/');
-        $key = get_setting('whatsapp_api_key');
         $instance = get_setting('whatsapp_instance');
         $number = $this->normalize($phone);
 
-        try {
-            $resp = Http::withHeaders(['apikey' => $key])
-                ->timeout(15)
-                ->acceptJson()
-                ->post("{$base}/message/sendText/{$instance}", [
-                    'number' => $number,
-                    'text' => $message,
-                ]);
-
-            if ($resp->successful()) {
-                return ['success' => true, 'message' => 'Sent'];
-            }
-
-            Log::warning('WhatsApp send failed', ['status' => $resp->status(), 'body' => $resp->body()]);
-            return ['success' => false, 'message' => 'HTTP ' . $resp->status() . ': ' . $resp->body()];
-        } catch (\Throwable $e) {
-            Log::error('WhatsApp error: ' . $e->getMessage());
-            return ['success' => false, 'message' => $e->getMessage()];
+        $headers = [
+            'apikey' => get_setting('whatsapp_api_key'),
+            'Content-Type' => 'application/json',
+        ];
+        if (filled($token = get_setting('whatsapp_token'))) {
+            $headers['Authorization'] = 'Bearer ' . $token;
         }
+
+        $lastError = 'unknown';
+        for ($attempt = 1; $attempt <= 2; $attempt++) {
+            try {
+                $resp = Http::withHeaders($headers)
+                    ->connectTimeout(7)
+                    ->timeout(20)
+                    ->acceptJson()
+                    ->post("{$base}/message/sendText/{$instance}", [
+                        'number' => $number,
+                        'text' => $message,
+                    ]);
+
+                if ($resp->successful()) {
+                    return ['success' => true, 'message' => 'Sent'];
+                }
+
+                $lastError = 'HTTP ' . $resp->status() . ': ' . $resp->body();
+                Log::warning('WhatsApp send failed', ['attempt' => $attempt, 'status' => $resp->status(), 'body' => $resp->body()]);
+
+                // Retry only transient server-side errors
+                if (! in_array($resp->status(), [408, 429]) && ! ($resp->status() >= 500)) {
+                    break;
+                }
+            } catch (\Throwable $e) {
+                $lastError = $e->getMessage();
+                Log::error('WhatsApp error (attempt ' . $attempt . '): ' . $e->getMessage());
+            }
+        }
+
+        return ['success' => false, 'message' => $lastError];
     }
 
     /**

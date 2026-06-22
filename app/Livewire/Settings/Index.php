@@ -24,7 +24,7 @@ class Index extends Component
     public $testPhone;
 
     // WhatsApp (Evolution API) Settings
-    public $whatsapp_enabled, $whatsapp_api_url, $whatsapp_api_key, $whatsapp_instance, $whatsapp_country_code;
+    public $whatsapp_enabled, $whatsapp_api_url, $whatsapp_api_key, $whatsapp_instance, $whatsapp_token, $whatsapp_country_code;
     public $waTestPhone;
 
     // General Settings
@@ -48,6 +48,7 @@ class Index extends Component
         $this->whatsapp_api_url = get_setting('whatsapp_api_url');
         $this->whatsapp_api_key = get_setting('whatsapp_api_key');
         $this->whatsapp_instance = get_setting('whatsapp_instance');
+        $this->whatsapp_token = get_setting('whatsapp_token');
         $this->whatsapp_country_code = get_setting('whatsapp_country_code', '966');
         $this->terms_conditions = get_setting('terms_conditions');
     }
@@ -66,6 +67,7 @@ class Index extends Component
             'whatsapp_api_url' => $this->whatsapp_api_url,
             'whatsapp_api_key' => $this->whatsapp_api_key,
             'whatsapp_instance' => $this->whatsapp_instance,
+            'whatsapp_token' => $this->whatsapp_token,
             'whatsapp_country_code' => $this->whatsapp_country_code ?: '966',
             'terms_conditions' => $this->terms_conditions,
         ];
@@ -108,6 +110,7 @@ class Index extends Component
             'whatsapp_api_url' => $this->whatsapp_api_url,
             'whatsapp_api_key' => $this->whatsapp_api_key,
             'whatsapp_instance' => $this->whatsapp_instance,
+            'whatsapp_token' => $this->whatsapp_token,
             'whatsapp_country_code' => $this->whatsapp_country_code ?: '966',
         ] as $key => $value) {
             Setting::updateOrCreate(['key' => $key], ['value' => $value]);

@@ -226,6 +226,7 @@ return [
     'wa_api_url' => 'API URL (Base URL)',
     'wa_api_key' => 'API key (apikey)',
     'wa_instance' => 'Instance name',
+    'wa_token' => 'Token (optional — Bearer)',
     'wa_country_code' => 'Country code (default 966)',
     'wa_hint' => 'Sent automatically to the customer on: reception, ready for delivery, and delivery.',
     'wa_test_sent' => 'Test WhatsApp message sent successfully',

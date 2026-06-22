@@ -226,6 +226,7 @@ return [
     'wa_api_url' => 'رابط الـ API (Base URL)',
     'wa_api_key' => 'مفتاح الـ API (apikey)',
     'wa_instance' => 'اسم الـ Instance',
+    'wa_token' => 'Token (اختياري — Bearer)',
     'wa_country_code' => 'كود الدولة (افتراضي 966)',
     'wa_hint' => 'يُرسل تلقائياً للعميل عند: الاستلام، الجاهزية للتسليم، والتسليم.',
     'wa_test_sent' => 'تم إرسال رسالة واتساب التجريبية بنجاح',

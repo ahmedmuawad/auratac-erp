@@ -150,6 +150,10 @@
                             <label class="md-label">{{ __('messages.wa_country_code') }}</label>
                             <input wire:model="whatsapp_country_code" type="text" class="md-field rounded-md-sm font-mono" dir="ltr" placeholder="966">
                         </div>
+                        <div class="md:col-span-2">
+                            <label class="md-label">{{ __('messages.wa_token') }}</label>
+                            <input wire:model="whatsapp_token" type="password" class="md-field rounded-md-sm font-mono" dir="ltr" placeholder="Bearer token (optional)">
+                        </div>
                     </div>
 
                     <div class="md-card-filled p-5 space-y-3">

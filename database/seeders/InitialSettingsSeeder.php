@@ -70,6 +70,7 @@ class InitialSettingsSeeder extends Seeder
             ['key' => 'whatsapp_api_url', 'value' => '', 'group' => 'whatsapp'],
             ['key' => 'whatsapp_api_key', 'value' => '', 'group' => 'whatsapp'],
             ['key' => 'whatsapp_instance', 'value' => '', 'group' => 'whatsapp'],
+            ['key' => 'whatsapp_token', 'value' => '', 'group' => 'whatsapp'],
             ['key' => 'whatsapp_country_code', 'value' => '966', 'group' => 'whatsapp'],
 
             // General Group
