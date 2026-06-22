@@ -88,12 +88,15 @@ class WhatsAppService
                 ->post("{$base}/message/sendMedia/{$config['instance']}", $payload);
 
             if ($resp->successful()) {
+                $this->log($phone, 'document', 'sent', null, $caption);
                 return ['success' => true, 'message' => 'Sent'];
             }
             Log::warning('WhatsApp document failed', ['status' => $resp->status(), 'body' => $resp->body()]);
+            $this->log($phone, 'document', 'failed', 'HTTP ' . $resp->status() . ': ' . $resp->body(), $caption);
             return ['success' => false, 'message' => 'HTTP ' . $resp->status()];
         } catch (\Throwable $e) {
             Log::error('WhatsApp document error: ' . $e->getMessage());
+            $this->log($phone, 'document', 'failed', $e->getMessage(), $caption);
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
@@ -104,11 +107,14 @@ class WhatsAppService
     public function notify(?string $phone, string $message): void
     {
         try {
-            if ($this->isConfigured()) {
-                $this->send($phone, $message);
+            if (! $this->isConfigured()) {
+                $this->log($phone, 'text', 'skipped', 'WhatsApp disabled or not configured', $message);
+                return;
             }
+            $this->send($phone, $message);
         } catch (\Throwable $e) {
             Log::error('WhatsApp notify error: ' . $e->getMessage());
+            $this->log($phone, 'text', 'failed', $e->getMessage(), $message);
         }
     }
 
@@ -118,11 +124,14 @@ class WhatsAppService
     public function notifyDocument(?string $phone, string $pdfBytes, string $fileName, string $caption = ''): void
     {
         try {
-            if ($this->isConfigured()) {
-                $this->sendDocument($phone, $pdfBytes, $fileName, $caption);
+            if (! $this->isConfigured()) {
+                $this->log($phone, 'document', 'skipped', 'WhatsApp disabled or not configured', $caption);
+                return;
             }
+            $this->sendDocument($phone, $pdfBytes, $fileName, $caption);
         } catch (\Throwable $e) {
             Log::error('WhatsApp notifyDocument error: ' . $e->getMessage());
+            $this->log($phone, 'document', 'failed', $e->getMessage(), $caption);
         }
     }
 
@@ -179,6 +188,21 @@ class WhatsAppService
     /**
      * Space out sends with a small jittered gap to reduce spam heuristics.
      */
+    private function log(?string $phone, string $type, string $status, ?string $response, ?string $summary = null): void
+    {
+        try {
+            \App\Models\WhatsAppLog::create([
+                'recipient' => $phone,
+                'type' => $type,
+                'status' => $status,
+                'response' => $response ? mb_substr($response, 0, 500) : null,
+                'summary' => $summary ? mb_substr($summary, 0, 300) : null,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('WhatsApp log write failed: ' . $e->getMessage());
+        }
+    }
+
     private function throttle(): void
     {
         $min = (float) get_setting('whatsapp_min_gap_seconds', 4);
@@ -247,6 +271,7 @@ class WhatsAppService
                     ]);
 
                 if ($resp->successful()) {
+                    $this->log($phone, 'text', 'sent', null, $message);
                     return ['success' => true, 'message' => 'Sent'];
                 }
 
@@ -262,6 +287,7 @@ class WhatsAppService
             }
         }
 
+        $this->log($phone, 'text', 'failed', $lastError, $message);
         return ['success' => false, 'message' => $lastError];
     }
 

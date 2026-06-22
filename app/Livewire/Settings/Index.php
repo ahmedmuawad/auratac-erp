@@ -179,7 +179,8 @@ class Index extends Component
 
     public function render()
     {
-        return view('livewire.settings.index')
-            ->layout('layouts.app');
+        return view('livewire.settings.index', [
+            'waLogs' => \App\Models\WhatsAppLog::latest()->take(10)->get(),
+        ])->layout('layouts.app');
     }
 }

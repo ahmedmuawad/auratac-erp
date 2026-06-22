@@ -208,6 +208,28 @@
                             </div>
                         @endif
                     </div>
+
+                    {{-- Message log --}}
+                    <div class="md-card-filled p-5">
+                        <h4 class="text-label text-on-surface flex items-center gap-2 mb-3">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span> {{ __('messages.wa_log') }}
+                        </h4>
+                        <div class="space-y-1 max-h-72 overflow-y-auto custom-scrollbar">
+                            @forelse($waLogs as $log)
+                                @php $sc = $log->status === 'sent' ? 'bg-success-container text-on-success-container' : ($log->status === 'skipped' ? 'bg-surface-container text-on-surface-variant' : 'bg-error-container text-on-error-container'); @endphp
+                                <div class="flex items-start gap-3 py-2 border-b last:border-0" style="border-color:var(--md-outline-variant)">
+                                    <span class="md-status {{ $sc }} shrink-0">{{ $log->status }}</span>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-label text-on-surface" dir="ltr">{{ $log->recipient }} · {{ $log->type }}</p>
+                                        @if($log->response)<p class="text-label-sm text-error">{{ $log->response }}</p>@endif
+                                        <p class="text-label-sm text-on-surface-variant">{{ $log->created_at->diffForHumans() }}</p>
+                                    </div>
+                                </div>
+                            @empty
+                                <p class="text-label text-on-surface-variant py-4 text-center">{{ __('messages.wa_no_logs') }}</p>
+                            @endforelse
+                        </div>
+                    </div>
                 </div>
 
             @elseif($activeTab == 'general')

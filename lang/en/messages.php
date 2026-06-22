@@ -228,6 +228,8 @@ return [
     'wa_instance' => 'Instance name',
     'wa_token' => 'Token (optional — Bearer)',
     'wa_min_gap' => 'Gap between messages (sec)',
+    'wa_log' => 'WhatsApp message log',
+    'wa_no_logs' => 'No messages yet',
     'wa_country_code' => 'Country code (default 966)',
     'wa_hint' => 'Sent automatically to the customer on: reception, ready for delivery, and delivery.',
     'wa_test_sent' => 'Test WhatsApp message sent successfully',
