@@ -65,6 +65,13 @@ class InitialSettingsSeeder extends Seeder
                 'group' => 'sms',
             ],
 
+            // WhatsApp (Evolution API) Group
+            ['key' => 'whatsapp_enabled', 'value' => '0', 'group' => 'whatsapp'],
+            ['key' => 'whatsapp_api_url', 'value' => '', 'group' => 'whatsapp'],
+            ['key' => 'whatsapp_api_key', 'value' => '', 'group' => 'whatsapp'],
+            ['key' => 'whatsapp_instance', 'value' => '', 'group' => 'whatsapp'],
+            ['key' => 'whatsapp_country_code', 'value' => '966', 'group' => 'whatsapp'],
+
             // General Group
             [
                 'key' => 'terms_conditions',

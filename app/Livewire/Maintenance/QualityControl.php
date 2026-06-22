@@ -51,6 +51,11 @@ class QualityControl extends Component
 
         if ($this->decision === 'passed') {
             $card->notifyRoles(['reception', 'qa'], 'notif_ready_delivery', 'local_shipping');
+            $card->loadMissing('customer');
+            app(\App\Services\WhatsAppService::class)->notify(
+                $card->customer?->phone,
+                "عميلنا العزيز {$card->customer?->full_name}،\nقطعتك جاهزة للاستلام من Aura Tac.\nرقم الكرت: {$card->card_number}\nبانتظارك. شكراً."
+            );
         } else {
             $card->notifyRoles(['technician'], 'notif_qa_rejected', 'cancel');
         }

@@ -28,6 +28,9 @@
             <button wire:click="$set('activeTab', 'sms')" class="md-state w-full flex items-center gap-3 px-5 h-12 rounded-md-xl text-label {{ $activeTab == 'sms' ? 'bg-primary text-on-primary' : 'bg-surface text-on-surface-variant' }}">
                 <span class="material-symbols-rounded" style="font-size:20px">sms</span> {{ __('messages.sms_settings') }}
             </button>
+            <button wire:click="$set('activeTab', 'whatsapp')" class="md-state w-full flex items-center gap-3 px-5 h-12 rounded-md-xl text-label {{ $activeTab == 'whatsapp' ? 'bg-primary text-on-primary' : 'bg-surface text-on-surface-variant' }}">
+                <span class="material-symbols-rounded" style="font-size:20px">chat</span> {{ __('messages.whatsapp_settings') }}
+            </button>
             <button wire:click="$set('activeTab', 'general')" class="md-state w-full flex items-center gap-3 px-5 h-12 rounded-md-xl text-label {{ $activeTab == 'general' ? 'bg-primary text-on-primary' : 'bg-surface text-on-surface-variant' }}">
                 <span class="material-symbols-rounded" style="font-size:20px">description</span> {{ __('messages.terms_printing') }}
             </button>
@@ -114,6 +117,55 @@
                         </div>
                         @if (session()->has('sms_status')) <p class="text-label-sm text-success">{{ session('sms_status') }}</p> @endif
                         @if (session()->has('sms_error')) <p class="text-label-sm text-error">{{ session('sms_error') }}</p> @endif
+                    </div>
+                </div>
+
+            @elseif($activeTab == 'whatsapp')
+                <div class="space-y-6">
+                    <div class="p-5 bg-onyx rounded-md-md flex items-center justify-between gap-4">
+                        <div>
+                            <h4 class="text-title text-on-onyx flex items-center gap-2"><span class="material-symbols-rounded text-primary">chat</span> {{ __('messages.whatsapp_evolution') }}</h4>
+                            <p class="text-label-sm text-on-onyx-variant mt-1">{{ __('messages.whatsapp_sub') }}</p>
+                        </div>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" wire:model="whatsapp_enabled" value="1" class="w-5 h-5 accent-[#8A6A3D]">
+                            <span class="text-label text-on-onyx">{{ __('messages.enabled') }}</span>
+                        </label>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="md:col-span-2">
+                            <label class="md-label">{{ __('messages.wa_api_url') }}</label>
+                            <input wire:model="whatsapp_api_url" type="text" class="md-field rounded-md-sm font-mono" dir="ltr" placeholder="https://evolution.example.com">
+                        </div>
+                        <div>
+                            <label class="md-label">{{ __('messages.wa_api_key') }}</label>
+                            <input wire:model="whatsapp_api_key" type="password" class="md-field rounded-md-sm font-mono" dir="ltr" placeholder="API Key">
+                        </div>
+                        <div>
+                            <label class="md-label">{{ __('messages.wa_instance') }}</label>
+                            <input wire:model="whatsapp_instance" type="text" class="md-field rounded-md-sm font-mono" dir="ltr" placeholder="instance name">
+                        </div>
+                        <div>
+                            <label class="md-label">{{ __('messages.wa_country_code') }}</label>
+                            <input wire:model="whatsapp_country_code" type="text" class="md-field rounded-md-sm font-mono" dir="ltr" placeholder="966">
+                        </div>
+                    </div>
+
+                    <div class="md-card-filled p-5 space-y-3">
+                        <h4 class="text-label text-on-surface flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span> {{ __('messages.test_real_link') }}
+                        </h4>
+                        <div class="flex items-end gap-3">
+                            <div class="flex-1">
+                                <label class="md-label">{{ __('messages.test_phone') }}</label>
+                                <input wire:model="waTestPhone" type="text" class="md-field rounded-md-sm" dir="ltr" placeholder="05xxxxxxxx">
+                            </div>
+                            <button wire:click="sendTestWhatsApp" class="md-btn md-btn-tonal">{{ __('messages.send_test') }}</button>
+                        </div>
+                        @if (session()->has('wa_status')) <p class="text-label-sm text-success">{{ session('wa_status') }}</p> @endif
+                        @if (session()->has('wa_error')) <p class="text-label-sm text-error">{{ session('wa_error') }}</p> @endif
+                        <p class="text-label-sm text-on-surface-variant">{{ __('messages.wa_hint') }}</p>
                     </div>
                 </div>
 

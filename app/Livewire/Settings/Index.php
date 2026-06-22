@@ -4,6 +4,7 @@ namespace App\Livewire\Settings;
 
 use App\Models\Setting;
 use App\Services\SmsService;
+use App\Services\WhatsAppService;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Cache;
@@ -22,6 +23,10 @@ class Index extends Component
     public $sms_mode, $twilio_sid, $twilio_token, $twilio_from;
     public $testPhone;
 
+    // WhatsApp (Evolution API) Settings
+    public $whatsapp_enabled, $whatsapp_api_url, $whatsapp_api_key, $whatsapp_instance, $whatsapp_country_code;
+    public $waTestPhone;
+
     // General Settings
     public $terms_conditions;
 
@@ -39,6 +44,11 @@ class Index extends Component
         $this->twilio_sid = get_setting('twilio_sid');
         $this->twilio_token = get_setting('twilio_token');
         $this->twilio_from = get_setting('twilio_from');
+        $this->whatsapp_enabled = get_setting('whatsapp_enabled', '0');
+        $this->whatsapp_api_url = get_setting('whatsapp_api_url');
+        $this->whatsapp_api_key = get_setting('whatsapp_api_key');
+        $this->whatsapp_instance = get_setting('whatsapp_instance');
+        $this->whatsapp_country_code = get_setting('whatsapp_country_code', '966');
         $this->terms_conditions = get_setting('terms_conditions');
     }
 
@@ -52,6 +62,11 @@ class Index extends Component
             'twilio_sid' => $this->twilio_sid,
             'twilio_token' => $this->twilio_token,
             'twilio_from' => $this->twilio_from,
+            'whatsapp_enabled' => $this->whatsapp_enabled ? '1' : '0',
+            'whatsapp_api_url' => $this->whatsapp_api_url,
+            'whatsapp_api_key' => $this->whatsapp_api_key,
+            'whatsapp_instance' => $this->whatsapp_instance,
+            'whatsapp_country_code' => $this->whatsapp_country_code ?: '966',
             'terms_conditions' => $this->terms_conditions,
         ];
 
@@ -80,6 +95,31 @@ class Index extends Component
             session()->flash('sms_status', 'تم إرسال الرسالة التجريبية بنجاح!');
         } else {
             session()->flash('sms_error', 'فشل الإرسال: ' . $result['message']);
+        }
+    }
+
+    public function sendTestWhatsApp()
+    {
+        $this->validate(['waTestPhone' => 'required']);
+
+        // persist current WhatsApp settings first so the test uses them
+        foreach ([
+            'whatsapp_enabled' => $this->whatsapp_enabled ? '1' : '0',
+            'whatsapp_api_url' => $this->whatsapp_api_url,
+            'whatsapp_api_key' => $this->whatsapp_api_key,
+            'whatsapp_instance' => $this->whatsapp_instance,
+            'whatsapp_country_code' => $this->whatsapp_country_code ?: '966',
+        ] as $key => $value) {
+            Setting::updateOrCreate(['key' => $key], ['value' => $value]);
+            Cache::forget('setting_' . $key);
+        }
+
+        $result = (new WhatsAppService())->send($this->waTestPhone, 'رسالة تجريبية من نظام Aura Tac عبر واتساب ✅');
+
+        if ($result['success']) {
+            session()->flash('wa_status', __('messages.wa_test_sent'));
+        } else {
+            session()->flash('wa_error', $result['message']);
         }
     }
 

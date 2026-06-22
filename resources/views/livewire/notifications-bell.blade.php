@@ -1,9 +1,39 @@
-<div wire:poll.45s x-data="{ open: false }" class="relative">
+<div wire:poll.20s
+     x-data="{
+        open: false,
+        count: @entangle('unread'),
+        toast: false,
+        msg: '',
+        init() {
+            this.$watch('count', (val, old) => { if (val > old) this.ping(); });
+        },
+        ping() {
+            this.msg = @js(__('messages.new_notification'));
+            this.toast = true;
+            setTimeout(() => { this.toast = false; }, 4500);
+            try {
+                const A = window.AudioContext || window.webkitAudioContext;
+                if (A) {
+                    const c = new A();
+                    if (c.state === 'suspended') c.resume();
+                    const o = c.createOscillator(), g = c.createGain();
+                    o.connect(g); g.connect(c.destination);
+                    o.type = 'sine'; o.frequency.value = 880;
+                    g.gain.setValueAtTime(0.0001, c.currentTime);
+                    g.gain.exponentialRampToValueAtTime(0.25, c.currentTime + 0.02);
+                    g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + 0.5);
+                    o.start(); o.stop(c.currentTime + 0.55);
+                }
+            } catch (e) {}
+        }
+     }"
+     class="relative">
+
     <button @click="open = !open" class="md-icon-btn relative" aria-label="{{ __('messages.notifications') }}">
         <span class="material-symbols-rounded">notifications</span>
-        @if($unread > 0)
-            <span class="absolute -top-0.5 -end-0.5 min-w-[18px] h-[18px] px-1 bg-error text-on-error rounded-full text-[10px] font-bold flex items-center justify-center border border-surface">{{ $unread > 9 ? '9+' : $unread }}</span>
-        @endif
+        <template x-if="count > 0">
+            <span class="absolute -top-0.5 -end-0.5 min-w-[18px] h-[18px] px-1 bg-error text-on-error rounded-full text-[10px] font-bold flex items-center justify-center border border-surface" x-text="count > 9 ? '9+' : count"></span>
+        </template>
     </button>
 
     <div x-show="open" x-cloak @click.away="open = false"
@@ -41,5 +71,12 @@
                 </div>
             @endforelse
         </div>
+    </div>
+
+    {{-- Instant toast --}}
+    <div x-show="toast" x-cloak x-transition
+         class="fixed bottom-8 end-8 z-[120] bg-onyx text-on-onyx px-5 py-4 rounded-md-md shadow-md-4 flex items-center gap-3">
+        <span class="material-symbols-rounded text-primary" style="font-size:22px">notifications_active</span>
+        <p class="text-label" x-text="msg"></p>
     </div>
 </div>

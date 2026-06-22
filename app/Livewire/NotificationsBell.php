@@ -6,6 +6,8 @@ use Livewire\Component;
 
 class NotificationsBell extends Component
 {
+    public int $unread = 0;
+
     public function markRead($id)
     {
         $n = auth()->user()->notifications()->find($id);
@@ -27,10 +29,10 @@ class NotificationsBell extends Component
     public function render()
     {
         $user = auth()->user();
+        $this->unread = $user->unreadNotifications()->count();
 
         return view('livewire.notifications-bell', [
-            'items'  => $user->notifications()->latest()->take(12)->get(),
-            'unread' => $user->unreadNotifications()->count(),
+            'items' => $user->notifications()->latest()->take(12)->get(),
         ]);
     }
 }

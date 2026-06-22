@@ -79,6 +79,14 @@ class Delivery extends Component
             'payment_status' => $this->payment_status,
         ]);
 
+        $card->notifyRoles(['reception'], 'notif_delivered', 'check_circle');
+
+        $card->loadMissing('customer');
+        app(\App\Services\WhatsAppService::class)->notify(
+            $card->customer?->phone,
+            "عميلنا العزيز {$card->customer?->full_name}،\nتم تسليم قطعتك من Aura Tac.\nرقم الكرت: {$card->card_number}\nنشكرك على ثقتك ونسعد بخدمتك."
+        );
+
         $this->showModal = false;
         session()->flash('success', __('messages.delivered_success'));
         $this->reset(['selectedCardId', 'final_labor_cost', 'final_parts_cost', 'final_total_cost', 'delivery_notes']);
