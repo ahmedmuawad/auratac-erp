@@ -292,19 +292,47 @@ class WhatsAppService
     }
 
     /**
-     * Normalize a local number to international format (no +).
+     * Normalize a number to international format (no +), auto-detecting
+     * Saudi / Egypt / Kuwait. Falls back to the configured country code.
      */
     private function normalize(string $phone, string $cc = '966'): string
     {
-        $p = preg_replace('/\D/', '', $phone);
+        $p = preg_replace('/\D/', '', (string) $phone);
 
         if (str_starts_with($p, '00')) {
             $p = substr($p, 2);
         }
+
+        // Saudi: local 05######## -> 9665########  /  already 9665########
+        if (preg_match('/^05\d{8}$/', $p)) {
+            return '966' . substr($p, 1);
+        }
+        if (preg_match('/^9665\d{8}$/', $p)) {
+            return $p;
+        }
+
+        // Egypt: local 01######### (11) -> 201#########  /  already 201#########
+        if (preg_match('/^01\d{9}$/', $p)) {
+            return '20' . substr($p, 1);
+        }
+        if (preg_match('/^201\d{9}$/', $p)) {
+            return $p;
+        }
+
+        // Kuwait: local 8 digits starting 5/6/9 -> 965########  /  already 965########
+        if (preg_match('/^[569]\d{7}$/', $p)) {
+            return '965' . $p;
+        }
+        if (preg_match('/^965[569]\d{7}$/', $p)) {
+            return $p;
+        }
+
+        // Fallback: use configured default country code
         if (str_starts_with($p, '0')) {
-            $p = $cc . substr($p, 1);
-        } elseif (! str_starts_with($p, $cc) && strlen($p) <= 10) {
-            $p = $cc . $p;
+            return $cc . substr($p, 1);
+        }
+        if (! str_starts_with($p, $cc) && strlen($p) <= 10) {
+            return $cc . $p;
         }
 
         return $p;
