@@ -117,7 +117,13 @@ class Index extends Component
             Cache::forget('setting_' . $key);
         }
 
-        $result = (new WhatsAppService())->send($this->waTestPhone, 'رسالة تجريبية من نظام Aura Tac عبر واتساب ✅');
+        $result = (new WhatsAppService())->sendWith([
+            'url'      => $this->whatsapp_api_url,
+            'key'      => $this->whatsapp_api_key,
+            'instance' => $this->whatsapp_instance,
+            'token'    => $this->whatsapp_token,
+            'cc'       => $this->whatsapp_country_code ?: '966',
+        ], $this->waTestPhone, 'رسالة تجريبية من نظام Aura Tac عبر واتساب ✅');
 
         if ($result['success']) {
             session()->flash('wa_status', __('messages.wa_test_sent'));
