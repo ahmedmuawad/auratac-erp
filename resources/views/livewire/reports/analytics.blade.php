@@ -19,18 +19,26 @@
     </div>
 
     {{-- Stats --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div class="bg-onyx p-6 rounded-md-lg">
-            <p class="text-label-sm text-primary uppercase tracking-widest mb-2">{{ __('messages.total_labor') }}</p>
-            <h3 class="text-display text-on-onyx">{{ number_format($totalLabor, 2) }} <small class="text-label text-primary">{{ __('messages.sar') }}</small></h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div class="bg-onyx p-5 rounded-md-lg">
+            <p class="text-label-sm text-primary uppercase tracking-widest mb-1">{{ __('messages.total_labor') }}</p>
+            <h3 class="text-title-lg text-on-onyx font-bold">{{ number_format($totalLabor, 2) }} <small class="text-label text-primary">{{ __('messages.sar') }}</small></h3>
         </div>
-        <div class="md-card-elevated p-6">
-            <p class="text-label-sm text-on-surface-variant uppercase tracking-widest mb-2">{{ __('messages.total_parts') }}</p>
-            <h3 class="text-display text-on-surface">{{ number_format($totalParts, 2) }} <small class="text-label text-on-surface-variant">{{ __('messages.sar') }}</small></h3>
+        <div class="md-card-elevated p-5">
+            <p class="text-label-sm text-on-surface-variant uppercase tracking-widest mb-1">{{ __('messages.total_parts') }}</p>
+            <h3 class="text-title-lg text-on-surface font-bold">{{ number_format($totalParts, 2) }} <small class="text-label text-on-surface-variant">{{ __('messages.sar') }}</small></h3>
         </div>
-        <div class="p-6 rounded-md-lg bg-primary-container" style="color:var(--md-on-primary-container)">
-            <p class="text-label-sm uppercase tracking-widest mb-2">{{ __('messages.total_cards_count') }}</p>
-            <h3 class="text-display">{{ $totalCards }}</h3>
+        <div class="md-card-elevated p-5">
+            <p class="text-label-sm text-on-surface-variant uppercase tracking-widest mb-1">المجموع (قبل الضريبة)</p>
+            <h3 class="text-title-lg text-on-surface font-bold">{{ number_format($totalSubtotal, 2) }} <small class="text-label text-on-surface-variant">{{ __('messages.sar') }}</small></h3>
+        </div>
+        <div class="bg-primary/10 border border-primary/20 p-5 rounded-md-lg">
+            <p class="text-label-sm text-primary font-bold uppercase tracking-widest mb-1">الضريبة المحصلة (15%)</p>
+            <h3 class="text-title-lg text-primary font-bold">{{ number_format($totalVat, 2) }} <small class="text-label">{{ __('messages.sar') }}</small></h3>
+        </div>
+        <div class="p-5 rounded-md-lg bg-primary-container" style="color:var(--md-on-primary-container)">
+            <p class="text-label-sm uppercase tracking-widest mb-1">الإجمالي شامل الضريبة</p>
+            <h3 class="text-title-lg font-bold">{{ number_format($totalGrand, 2) }} <small class="text-label">{{ __('messages.sar') }}</small></h3>
         </div>
     </div>
 

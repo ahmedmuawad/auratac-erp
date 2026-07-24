@@ -12,7 +12,7 @@
         .brand-name { font-size: 22px; font-weight: bold; color: #16130F; letter-spacing: 1px; }
         .brand-accent { color: #8A6A3D; }
         .brand-sub { font-size: 10px; color: #8A6A3D; letter-spacing: 2px; }
-        .doc-title { background: #8A6A3D; color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; text-align: center; }
+        .doc-title { background: #8A6A3D; color: #fff; padding: 8px 18px; border-radius: 6px; font-size: 18px; font-weight: bold; text-align: center; }
         .barcode-box { text-align: center; }
         .barcode-box .num { font-family: 'dejavusansmono', monospace; font-size: 13px; font-weight: bold; margin-top: 2px; }
 
@@ -50,6 +50,9 @@
     $qa = $card->latestQa;
     $labor = (float)($card->final_labor_cost ?? $card->expected_cost_labor ?? 0);
     $parts = (float)($card->final_parts_cost ?? $card->expected_cost_parts ?? 0);
+    $subtotal = $card->final_subtotal > 0 ? (float)$card->final_subtotal : ($card->subtotal > 0 ? (float)$card->subtotal : ($labor + $parts));
+    $taxAmount = $card->final_tax_amount > 0 ? (float)$card->final_tax_amount : ($card->tax_amount > 0 ? (float)$card->tax_amount : round($subtotal * 0.15, 2));
+    $totalWithVat = $card->final_total_cost > 0 ? (float)$card->final_total_cost : ($card->total_cost > 0 ? (float)$card->total_cost : round($subtotal + $taxAmount, 2));
     $totalMin = 0;
 @endphp
 
@@ -124,13 +127,21 @@
     </table>
 
     {{-- Cost --}}
-    <div class="section-title">التكلفة</div>
+    <div class="section-title">التكلفة والبيان المالي</div>
     <table class="cost">
-        <tr><th>الأجور</th><th>قطع الغيار</th><th>الإجمالي</th></tr>
+        <tr>
+            <th>أجور اليد</th>
+            <th>قطع الغيار</th>
+            <th>المجموع قبل الضريبة</th>
+            <th>ضريبة القيمة المضافة (15%)</th>
+            <th>الإجمالي شامل الضريبة</th>
+        </tr>
         <tr>
             <td>{{ number_format($labor, 2) }} ريال</td>
             <td>{{ number_format($parts, 2) }} ريال</td>
-            <td class="total">{{ number_format($labor + $parts, 2) }} ريال</td>
+            <td>{{ number_format($subtotal, 2) }} ريال</td>
+            <td>{{ number_format($taxAmount, 2) }} ريال</td>
+            <td class="total">{{ number_format($totalWithVat, 2) }} ريال</td>
         </tr>
     </table>
 

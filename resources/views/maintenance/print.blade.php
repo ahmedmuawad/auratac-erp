@@ -12,7 +12,7 @@
         .brand-name { font-size: 22px; font-weight: bold; color: #16130F; letter-spacing: 1px; }
         .brand-accent { color: #8A6A3D; }
         .brand-sub { font-size: 10px; color: #8A6A3D; letter-spacing: 2px; }
-        .doc-title { background: #16130F; color: #fff; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; text-align: center; }
+        .doc-title { background: #16130F; color: #fff; padding: 8px 18px; border-radius: 6px; font-size: 18px; font-weight: bold; text-align: center; }
         .barcode-box { text-align: center; }
         .barcode-box .num { font-family: 'dejavusansmono', monospace; font-size: 13px; font-weight: bold; margin-top: 2px; }
 
@@ -49,10 +49,31 @@
 @php
     $services = \App\Models\MaintenanceCard::standardServices();
     $requested = collect($card->repair_requests ?? [])->filter(fn($v) => trim((string)$v) !== '')->values();
-    $isChecked = fn($label) => $requested->contains($label) || $requested->contains(fn($r) => str_contains($r, $label));
-    $extra = $requested->reject(fn($r) => collect($services)->contains(fn($lbl) => str_contains($r, $lbl) || $r === $lbl));
+
+    $isChecked = function($service) use ($requested) {
+        $label = is_array($service) ? ($service['name'] ?? '') : (string)$service;
+        if ($label === '') return false;
+        return $requested->contains($label) || $requested->contains(fn($r) => str_contains((string)$r, $label));
+    };
+
+    $extra = $requested->reject(function($r) use ($services) {
+        foreach ($services as $s) {
+            $label = is_array($s) ? ($s['name'] ?? '') : (string)$s;
+            if ($label !== '' && (str_contains((string)$r, $label) || (string)$r === $label)) {
+                return true;
+            }
+        }
+        return false;
+    });
+
     $labor = (float)($card->expected_cost_labor ?? 0);
     $parts = (float)($card->expected_cost_parts ?? 0);
+    $subtotal = $card->subtotal > 0 ? (float)$card->subtotal : ($labor + $parts);
+    $taxRate = (float)($card->tax_rate ?: 15.00);
+    $taxAmount = $card->tax_amount > 0 ? (float)$card->tax_amount : round($subtotal * ($taxRate / 100), 2);
+    $totalWithVat = $card->total_cost > 0 ? (float)$card->total_cost : round($subtotal + $taxAmount, 2);
+    $paid = (float)($card->paid_amount ?? 0);
+    $remaining = (float)($card->remaining_amount ?? ($totalWithVat - $paid));
 @endphp
 
     {{-- Header --}}
@@ -114,8 +135,9 @@
     <div class="section-title">طلب الإصلاح</div>
     <table class="services">
         <tr>
-            @foreach($services as $label)
-                <td style="width: 25%;"><span class="chk {{ $isChecked($label) ? 'on' : '' }}">{{ $isChecked($label) ? '✓' : '' }}</span>{{ $label }}</td>
+            @foreach($services as $s)
+                @php $label = is_array($s) ? ($s['name'] ?? '') : $s; @endphp
+                <td style="width: 25%;"><span class="chk {{ $isChecked($s) ? 'on' : '' }}">{{ $isChecked($s) ? '✓' : '' }}</span>{{ $label }}</td>
             @endforeach
         </tr>
         @if($extra->count())
@@ -124,17 +146,25 @@
     </table>
 
     {{-- Estimated cost --}}
-    <div class="section-title">التكلفة التقديرية</div>
+    <div class="section-title">التكلفة والبيان المالي</div>
     <table class="cost">
         <tr>
-            <th>الأجور</th>
+            <th>أجور اليد</th>
             <th>قطع الغيار</th>
-            <th>الإجمالي التقديري</th>
+            <th>المجموع قبل الضريبة</th>
+            <th>ضريبة القيمة المضافة (15%)</th>
+            <th>الإجمالي شامل الضريبة</th>
+            <th>المبلغ المدفوع</th>
+            <th>المبلغ المتبقي</th>
         </tr>
         <tr>
             <td>{{ number_format($labor, 2) }} ريال</td>
             <td>{{ number_format($parts, 2) }} ريال</td>
-            <td class="total">{{ number_format($labor + $parts, 2) }} ريال</td>
+            <td>{{ number_format($subtotal, 2) }} ريال</td>
+            <td>{{ number_format($taxAmount, 2) }} ريال</td>
+            <td class="total">{{ number_format($totalWithVat, 2) }} ريال</td>
+            <td>{{ number_format($paid, 2) }} ريال</td>
+            <td style="font-weight:bold; color:{{ $remaining > 0 ? '#b91c1c' : '#15803d' }}">{{ number_format($remaining, 2) }} ريال</td>
         </tr>
     </table>
 

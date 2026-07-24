@@ -1,6 +1,6 @@
 @php
     $user = auth()->user();
-    $role = $user->role;
+    $role = $user?->role;
 @endphp
 
 <aside

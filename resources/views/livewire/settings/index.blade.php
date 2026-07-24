@@ -34,6 +34,11 @@
             <button wire:click="$set('activeTab', 'general')" class="md-state w-full flex items-center gap-3 px-5 h-12 rounded-md-xl text-label {{ $activeTab == 'general' ? 'bg-primary text-on-primary' : 'bg-surface text-on-surface-variant' }}">
                 <span class="material-symbols-rounded" style="font-size:20px">description</span> {{ __('messages.terms_printing') }}
             </button>
+            @if(auth()->user()->role === 'manager')
+            <button wire:click="$set('activeTab', 'repair_services')" class="md-state w-full flex items-center gap-3 px-5 h-12 rounded-md-xl text-label {{ $activeTab == 'repair_services' ? 'bg-primary text-on-primary' : 'bg-surface text-on-surface-variant' }}">
+                <span class="material-symbols-rounded" style="font-size:20px">build</span> {{ __('messages.repair_services_settings') }}
+            </button>
+            @endif
         </div>
 
         {{-- Content --}}
@@ -71,6 +76,36 @@
                                     {{ __('messages.choose_new_logo') }}
                                 </label>
                                 <p class="text-label-sm text-on-surface-variant">{{ __('messages.logo_hint') }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Login Background Image Upload --}}
+                    <div class="border-t pt-6" style="border-color:var(--md-outline-variant)">
+                        <label class="md-label">صورة خلفية صفحة الدخول (Login Hero Image)</label>
+                        <div class="flex items-center gap-6 mt-2">
+                            <div class="w-44 h-28 rounded-md-lg bg-surface-container border-2 border-dashed flex items-center justify-center overflow-hidden" style="border-color:var(--md-outline-variant)">
+                                @if ($newLoginBg)
+                                    <img src="{{ $newLoginBg->temporaryUrl() }}" class="w-full h-full object-cover">
+                                @else
+                                    @php $loginBg = get_setting('login_bg_image'); @endphp
+                                    @if($loginBg && file_exists(public_path($loginBg)))
+                                        <img src="{{ asset($loginBg) }}" class="w-full h-full object-cover">
+                                    @else
+                                        <div class="text-center p-2 text-on-surface-variant text-label-sm">
+                                            <span class="material-symbols-rounded block mb-1">image</span>
+                                            الصورة الافتراضية
+                                        </div>
+                                    @endif
+                                @endif
+                            </div>
+                            <div class="space-y-3">
+                                <input type="file" wire:model="newLoginBg" class="hidden" id="login-bg-upload" accept="image/*">
+                                <label for="login-bg-upload" class="md-btn md-btn-tonal cursor-pointer">
+                                    <span class="material-symbols-rounded" style="font-size:20px">upload_file</span>
+                                    اختر صورة خلفية لصفحة الدخول
+                                </label>
+                                <p class="text-label-sm text-on-surface-variant">تظهر هذه الصورة في الجانب المخصص لصفحة دخول الموظفين (تساعد في عكس نشاط صيانة الأسلحة والتجهيزات).</p>
                             </div>
                         </div>
                     </div>
@@ -238,6 +273,74 @@
                         <label class="md-label">{{ __('messages.terms_label') }}</label>
                         <textarea wire:model="terms_conditions" rows="10" class="md-field"></textarea>
                         <p class="text-label-sm text-on-surface-variant mt-1">{{ __('messages.terms_hint') }}</p>
+                    </div>
+                </div>
+            @elseif($activeTab == 'repair_services' && auth()->user()->role === 'manager')
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-title-medium text-on-surface font-semibold">{{ __('messages.repair_services_settings') }}</h3>
+                        <p class="text-body-sm text-on-surface-variant mt-0.5">{{ __('messages.manage_repair_services') }}</p>
+                    </div>
+
+                    {{-- Add new service form --}}
+                    <form wire:submit.prevent="addRepairService" class="grid grid-cols-1 md:grid-cols-3 gap-3 items-end md-card-filled p-4 rounded-md-lg">
+                        <div class="md:col-span-1">
+                            <label class="md-label">كود الخدمة (مثال: SRV-01)</label>
+                            <input wire:model="newServiceCode" type="text" class="md-field rounded-md-sm uppercase" placeholder="SRV-01">
+                            @error('newServiceCode') <span class="text-label-sm text-error">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="md:col-span-1">
+                            <label class="md-label">{{ __('messages.service_name') }}</label>
+                            <input wire:model="newServiceLabel" type="text" class="md-field rounded-md-sm" placeholder="مثال: تنظيف وتجميع أجزاء السلاح">
+                            @error('newServiceLabel') <span class="text-label-sm text-error">{{ $message }}</span> @enderror
+                        </div>
+                        <button type="submit" class="md-btn md-btn-filled h-11 md:col-span-1">
+                            <span class="material-symbols-rounded">add</span>
+                            <span>{{ __('messages.add_repair_service') }}</span>
+                        </button>
+                    </form>
+
+                    {{-- Services List --}}
+                    <div class="space-y-3">
+                        @forelse($repairServices as $key => $item)
+                            @php
+                                $code = is_array($item) ? ($item['code'] ?? '') : '';
+                                $label = is_array($item) ? ($item['name'] ?? '') : $item;
+                            @endphp
+                            <div class="flex items-center justify-between p-4 bg-surface-container rounded-md-lg border" style="border-color:var(--md-outline-variant)">
+                                @if($editingServiceKey === $key)
+                                    <div class="flex items-center gap-3 flex-1">
+                                        <input wire:model="editingServiceCode" type="text" class="md-field rounded-md-sm w-32 uppercase" placeholder="الكود">
+                                        <input wire:model="editingServiceLabel" type="text" class="md-field rounded-md-sm flex-1" placeholder="اسم الخدمة">
+                                        <button type="button" wire:click="updateRepairService" class="md-btn md-btn-filled h-10 px-4">
+                                            <span class="material-symbols-rounded" style="font-size:18px">check</span>
+                                            <span>{{ __('messages.save') }}</span>
+                                        </button>
+                                        <button type="button" wire:click="cancelEditingService" class="md-btn md-btn-tonal h-10 px-4">
+                                            <span>{{ __('messages.cancel') }}</span>
+                                        </button>
+                                    </div>
+                                @else
+                                    <div class="flex items-center gap-3">
+                                        <span class="px-2.5 py-1 text-xs font-mono rounded bg-primary/10 text-primary font-bold">{{ $code }}</span>
+                                        <span class="text-title-small text-on-surface font-medium">{{ $label }}</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" wire:click="editRepairService('{{ $key }}')" class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+                                            <span class="material-symbols-rounded" style="font-size:20px">edit</span>
+                                        </button>
+                                        <button type="button" wire:click="deleteRepairService('{{ $key }}')" wire:confirm="{{ __('messages.confirm_delete_service') }}" class="p-2 text-on-surface-variant hover:text-error transition-colors">
+                                            <span class="material-symbols-rounded" style="font-size:20px">delete</span>
+                                        </button>
+                                    </div>
+                                @endif
+                            </div>
+                        @empty
+                            <div class="text-center py-8 text-on-surface-variant">
+                                <span class="material-symbols-rounded text-4xl mb-2">info</span>
+                                <p>{{ __('messages.no_repair_services') }}</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             @endif

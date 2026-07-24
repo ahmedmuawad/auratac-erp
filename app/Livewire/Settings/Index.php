@@ -18,6 +18,7 @@ class Index extends Component
     // Branding Settings
     public $system_name, $system_name_en, $footer_text;
     public $newLogo;
+    public $newLoginBg;
 
     // SMS Settings
     public $sms_mode, $twilio_sid, $twilio_token, $twilio_from;
@@ -31,6 +32,14 @@ class Index extends Component
 
     // General Settings
     public $terms_conditions;
+
+    // Repair Services Settings (Admin only)
+    public $repairServices = [];
+    public $newServiceLabel = '';
+    public $newServiceCode = '';
+    public $editingServiceKey = null;
+    public $editingServiceLabel = '';
+    public $editingServiceCode = '';
 
     public function mount()
     {
@@ -54,6 +63,7 @@ class Index extends Component
         $this->whatsapp_country_code = get_setting('whatsapp_country_code', '966');
         $this->whatsapp_min_gap_seconds = get_setting('whatsapp_min_gap_seconds', '4');
         $this->terms_conditions = get_setting('terms_conditions');
+        $this->loadRepairServices();
     }
 
     public function saveSettings()
@@ -85,6 +95,12 @@ class Index extends Component
             $path = $this->newLogo->store('branding', 'public');
             Setting::updateOrCreate(['key' => 'logo_path'], ['value' => 'storage/' . $path]);
             Cache::forget('setting_logo_path');
+        }
+
+        if ($this->newLoginBg) {
+            $path = $this->newLoginBg->store('branding', 'public');
+            Setting::updateOrCreate(['key' => 'login_bg_image'], ['value' => 'storage/' . $path]);
+            Cache::forget('setting_login_bg_image');
         }
 
         session()->flash('success', __('messages.settings_updated_success'));
@@ -175,6 +191,107 @@ class Index extends Component
         $this->waQr = null;
         $this->waState = $ok ? 'close' : $this->waState;
         session()->flash($ok ? 'wa_status' : 'wa_error', $ok ? __('messages.wa_logged_out') : __('messages.wa_logout_failed'));
+    }
+
+    // Repair Services CRUD (Admin Only)
+    public function loadRepairServices()
+    {
+        $this->repairServices = \App\Models\MaintenanceCard::standardServices();
+    }
+
+    public function addRepairService()
+    {
+        if (auth()->user()->role !== 'manager') {
+            abort(403);
+        }
+
+        $this->validate([
+            'newServiceLabel' => 'required|string|max:100',
+            'newServiceCode'  => 'nullable|string|max:20',
+        ]);
+
+        $key = 'srv_' . \Illuminate\Support\Str::slug($this->newServiceLabel, '_') . '_' . rand(100, 999);
+        $code = trim($this->newServiceCode) !== '' ? strtoupper(trim($this->newServiceCode)) : sprintf('SRV-%02d', count($this->repairServices) + 1);
+
+        $this->repairServices[$key] = [
+            'code' => $code,
+            'name' => trim($this->newServiceLabel),
+        ];
+        
+        $this->saveRepairServices();
+        $this->newServiceLabel = '';
+        $this->newServiceCode = '';
+        session()->flash('success', __('messages.success'));
+    }
+
+    public function editRepairService($key)
+    {
+        if (auth()->user()->role !== 'manager') {
+            abort(403);
+        }
+
+        if (isset($this->repairServices[$key])) {
+            $this->editingServiceKey = $key;
+            $item = $this->repairServices[$key];
+            $this->editingServiceLabel = is_array($item) ? ($item['name'] ?? '') : $item;
+            $this->editingServiceCode = is_array($item) ? ($item['code'] ?? '') : '';
+        }
+    }
+
+    public function updateRepairService()
+    {
+        if (auth()->user()->role !== 'manager') {
+            abort(403);
+        }
+
+        $this->validate([
+            'editingServiceLabel' => 'required|string|max:100',
+            'editingServiceCode'  => 'nullable|string|max:20',
+        ]);
+
+        if ($this->editingServiceKey && isset($this->repairServices[$this->editingServiceKey])) {
+            $existingItem = $this->repairServices[$this->editingServiceKey];
+            $defaultCode = is_array($existingItem) ? ($existingItem['code'] ?? 'SRV-01') : 'SRV-01';
+            $code = trim($this->editingServiceCode) !== '' ? strtoupper(trim($this->editingServiceCode)) : $defaultCode;
+
+            $this->repairServices[$this->editingServiceKey] = [
+                'code' => $code,
+                'name' => trim($this->editingServiceLabel),
+            ];
+
+            $this->saveRepairServices();
+            $this->cancelEditingService();
+            session()->flash('success', __('messages.success'));
+        }
+    }
+
+    public function cancelEditingService()
+    {
+        $this->editingServiceKey = null;
+        $this->editingServiceLabel = '';
+        $this->editingServiceCode = '';
+    }
+
+    public function deleteRepairService($key)
+    {
+        if (auth()->user()->role !== 'manager') {
+            abort(403);
+        }
+
+        if (isset($this->repairServices[$key])) {
+            unset($this->repairServices[$key]);
+            $this->saveRepairServices();
+            session()->flash('success', __('messages.success'));
+        }
+    }
+
+    protected function saveRepairServices()
+    {
+        Setting::updateOrCreate(
+            ['key' => 'standard_repair_services'],
+            ['value' => json_encode($this->repairServices, JSON_UNESCAPED_UNICODE)]
+        );
+        Cache::forget('setting_standard_repair_services');
     }
 
     public function render()

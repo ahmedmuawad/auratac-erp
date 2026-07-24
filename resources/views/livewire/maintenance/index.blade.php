@@ -145,10 +145,19 @@
                             <div class="space-y-3">
                                 <span class="md-status bg-primary text-on-primary">02 · {{ __('messages.repair_requests_points') }}</span>
                                 <div class="grid grid-cols-1 gap-2">
-                                    @foreach(\App\Models\MaintenanceCard::standardServices() as $label)
-                                        <label class="md-state flex items-center gap-3 p-3 rounded-md-sm md-card-filled cursor-pointer">
-                                            <input type="checkbox" wire:model="services" value="{{ $label }}" class="w-5 h-5 accent-[#8A6A3D]">
-                                            <span class="text-label text-on-surface">{{ $label }}</span>
+                                    @foreach(\App\Models\MaintenanceCard::standardServices() as $srv)
+                                        @php
+                                            $sName = is_array($srv) ? ($srv['name'] ?? '') : (string)$srv;
+                                            $sCode = is_array($srv) ? ($srv['code'] ?? '') : '';
+                                        @endphp
+                                        <label class="md-state flex items-center justify-between p-3 rounded-md-sm md-card-filled cursor-pointer">
+                                            <div class="flex items-center gap-3">
+                                                <input type="checkbox" wire:model="services" value="{{ $sName }}" class="w-5 h-5 accent-[#8A6A3D]">
+                                                <span class="text-label text-on-surface">{{ $sName }}</span>
+                                            </div>
+                                            @if($sCode)
+                                                <span class="px-2 py-0.5 text-xs font-mono rounded bg-primary/10 text-primary font-bold">{{ $sCode }}</span>
+                                            @endif
                                         </label>
                                     @endforeach
                                 </div>

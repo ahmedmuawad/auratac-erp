@@ -1,10 +1,12 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Livewire\Dashboard;
+use App\Http\Controllers\LandingController;
 use App\Http\Controllers\MaintenanceCardController;
+use App\Livewire\Dashboard;
 use App\Livewire\Auth\Login;
-
+use App\Livewire\Portal\CustomerPortal;
 use App\Livewire\Customers\Index as CustomersIndex;
 use App\Livewire\Items\Index as ItemsIndex;
 use App\Livewire\Maintenance\Index as MaintenanceIndex;
@@ -19,7 +21,10 @@ use App\Livewire\Settings\Index as SettingsIndex;
 use App\Livewire\Staff\Index as StaffIndex;
 use App\Livewire\Staff\Roles as RolesIndex;
 
-Route::get('/', Dashboard::class)
+Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::get('portal', CustomerPortal::class)->name('portal.index');
+
+Route::get('dashboard', Dashboard::class)
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 

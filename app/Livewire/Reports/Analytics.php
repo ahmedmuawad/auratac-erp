@@ -15,6 +15,9 @@ class Analytics extends Component
 
     public $totalLabor = 0;
     public $totalParts = 0;
+    public $totalSubtotal = 0;
+    public $totalVat = 0;
+    public $totalGrand = 0;
     public $totalCards = 0;
     public $techStats = [];
 
@@ -40,8 +43,17 @@ class Analytics extends Component
 
         $query = MaintenanceCard::where('status', 'delivered')->whereBetween('delivered_at', [$from, $to]);
 
-        $this->totalLabor = $query->clone()->sum('final_labor_cost');
-        $this->totalParts = $query->clone()->sum('final_parts_cost');
+        $this->totalLabor = (float) $query->clone()->sum('final_labor_cost');
+        $this->totalParts = (float) $query->clone()->sum('final_parts_cost');
+        $this->totalSubtotal = $this->totalLabor + $this->totalParts;
+        $this->totalVat = (float) $query->clone()->sum('final_tax_amount');
+        if ($this->totalVat == 0 && $this->totalSubtotal > 0) {
+            $this->totalVat = round($this->totalSubtotal * 0.15, 2);
+        }
+        $this->totalGrand = (float) $query->clone()->sum('final_total_cost');
+        if ($this->totalGrand == 0) {
+            $this->totalGrand = round($this->totalSubtotal + $this->totalVat, 2);
+        }
         $this->totalCards = $query->clone()->count();
 
         // Technician performance

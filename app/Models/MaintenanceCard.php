@@ -20,12 +20,17 @@ class MaintenanceCard extends Model
         'item_image',
         'expected_cost_labor',
         'expected_cost_parts',
+        'subtotal',
+        'tax_rate',
+        'tax_amount',
         'total_cost',
         'admin_notes',
         'status',
         'delivered_at',
         'final_labor_cost',
         'final_parts_cost',
+        'final_subtotal',
+        'final_tax_amount',
         'final_total_cost',
         'delivery_notes',
         'payment_status',
@@ -36,8 +41,16 @@ class MaintenanceCard extends Model
     protected $casts = [
         'repair_requests' => 'array',
         'delivered_at' => 'datetime',
+        'expected_cost_labor' => 'decimal:2',
+        'expected_cost_parts' => 'decimal:2',
+        'subtotal' => 'decimal:2',
+        'tax_rate' => 'decimal:2',
+        'tax_amount' => 'decimal:2',
+        'total_cost' => 'decimal:2',
         'final_labor_cost' => 'decimal:2',
         'final_parts_cost' => 'decimal:2',
+        'final_subtotal' => 'decimal:2',
+        'final_tax_amount' => 'decimal:2',
         'final_total_cost' => 'decimal:2',
         'paid_amount' => 'decimal:2',
         'remaining_amount' => 'decimal:2',
@@ -99,11 +112,34 @@ class MaintenanceCard extends Model
      */
     public static function standardServices(): array
     {
+        $setting = get_setting('standard_repair_services');
+        if ($setting) {
+            $decoded = json_decode($setting, true);
+            if (is_array($decoded) && !empty($decoded)) {
+                $formatted = [];
+                $i = 1;
+                foreach ($decoded as $key => $item) {
+                    if (is_string($item)) {
+                        $formatted[$key] = [
+                            'code' => sprintf('SRV-%02d', $i++),
+                            'name' => $item,
+                        ];
+                    } else {
+                        $formatted[$key] = [
+                            'code' => $item['code'] ?? sprintf('SRV-%02d', $i++),
+                            'name' => $item['name'] ?? ($item['label'] ?? ''),
+                        ];
+                    }
+                }
+                return $formatted;
+            }
+        }
+
         return [
-            'full_maintenance' => 'صيانة وتنظيف شامل',
-            'accessories'      => 'تركيب اكسسوارات',
-            'change_grips'     => 'تغيير مقابض',
-            'engraving'        => 'حفر اسم العميل مع الشعار',
+            'full_maintenance' => ['code' => 'SRV-01', 'name' => 'صيانة وتنظيف شامل'],
+            'accessories'      => ['code' => 'SRV-02', 'name' => 'تركيب اكسسوارات'],
+            'change_grips'     => ['code' => 'SRV-03', 'name' => 'تغيير مقابض'],
+            'engraving'        => ['code' => 'SRV-04', 'name' => 'حفر اسم العميل مع الشعار'],
         ];
     }
 

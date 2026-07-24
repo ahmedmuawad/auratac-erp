@@ -89,19 +89,27 @@
                                     </div>
                                 </div>
 
-                                <div class="bg-onyx p-5 rounded-md-md space-y-3">
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-label text-on-onyx-variant">{{ __('messages.final_total') }}</span>
-                                        <span class="text-title-lg text-primary">{{ number_format($final_total_cost, 2) }}</span>
+                                <div class="bg-onyx p-5 rounded-md-md space-y-2">
+                                    <div class="flex justify-between items-center text-on-onyx-variant text-label-sm">
+                                        <span>{{ __('messages.subtotal') ?? 'المجموع قبل الضريبة' }}</span>
+                                        <span class="tabular-nums font-mono">{{ number_format($final_subtotal, 2) }} {{ __('messages.sar') }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-primary text-label-sm font-medium">
+                                        <span>{{ __('messages.vat_amount') ?? 'ضريبة القيمة المضافة (15%)' }}</span>
+                                        <span class="tabular-nums font-mono">+{{ number_format($final_tax_amount, 2) }} {{ __('messages.sar') }}</span>
+                                    </div>
+                                    <div class="border-t pt-2 flex justify-between items-center border-white/10">
+                                        <span class="text-label text-on-onyx font-bold">{{ __('messages.final_total') }} (شامل الضريبة 15%)</span>
+                                        <span class="text-title-lg text-primary tabular-nums font-bold">{{ number_format($final_total_cost, 2) }} <small class="text-label">{{ __('messages.sar') }}</small></span>
                                     </div>
                                     @if($payment_status !== 'paid')
                                         <div class="flex justify-between items-center pt-2 border-t border-white/10">
                                             <span class="text-label text-on-onyx-variant">{{ __('messages.amount_paid') }}</span>
-                                            <span class="text-title text-success">{{ number_format($paid_amount, 2) }}</span>
+                                            <span class="text-title text-success">{{ number_format($paid_amount, 2) }} {{ __('messages.sar') }}</span>
                                         </div>
                                         <div class="flex justify-between items-center pt-2 border-t border-white/10">
                                             <span class="text-label text-error">{{ __('messages.remaining_debt') }}</span>
-                                            <span class="text-title text-error">{{ number_format($remaining_amount, 2) }}</span>
+                                            <span class="text-title text-error">{{ number_format($remaining_amount, 2) }} {{ __('messages.sar') }}</span>
                                         </div>
                                     @endif
                                 </div>
@@ -130,6 +138,68 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    @endif
+
+    {{-- Delivery OTP Verification Modal --}}
+    @if($show_otp_modal)
+        <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in" style="background-color: rgba(26, 26, 26, 0.8);">
+            <div class="md-card-elevated w-full max-w-md p-6 space-y-6 rounded-md-xl border shadow-2xl" style="border-color:var(--md-outline-variant); background-color: var(--md-surface, #ffffff);">
+                <div class="flex items-center justify-between border-b pb-4" style="border-color:var(--md-outline-variant)">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                            <span class="material-symbols-rounded">mark_email_read</span>
+                        </span>
+                        <div>
+                            <h3 class="text-title-medium text-on-surface font-bold">تأكيد كود تسليم واستلام السلاح</h3>
+                            <p class="text-label-sm text-on-surface-variant font-mono">التحقق عبر الواتساب</p>
+                        </div>
+                    </div>
+                    <button type="button" wire:click="closeDeliveryOtpModal" class="text-on-surface-variant hover:text-error transition-colors">
+                        <span class="material-symbols-rounded">close</span>
+                    </button>
+                </div>
+
+                <p class="text-body-sm text-on-surface-variant">
+                    تم إرسال كود تحقق مكون من 4 أرقام عبر واتساب إلى رقم العميل لتأكيد الهوية واستلام السلاح وإغلاق الكرت.
+                </p>
+
+                @if($otp_sent_message)
+                    <div class="p-3 bg-success-container text-on-success-container rounded-md-sm text-label-sm flex items-center gap-2">
+                        <span class="material-symbols-rounded" style="font-size:18px">check_circle</span>
+                        <span>{{ $otp_sent_message }}</span>
+                    </div>
+                @endif
+
+                <form wire:submit.prevent="verifyDeliveryOtpAndConfirm" class="space-y-5">
+                    <div>
+                        <label class="md-label text-center block mb-2">{{ __('messages.enter_otp_code') }}</label>
+                        <input wire:model="entered_otp" type="text" maxlength="6" autofocus placeholder="• • • •" class="md-field text-center text-3xl font-mono tracking-widest rounded-md-md h-14 uppercase" style="letter-spacing: 0.4em;">
+                        @if($otp_error)
+                            <p class="text-label-sm text-error text-center mt-2 font-bold">{{ $otp_error }}</p>
+                        @endif
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <button type="submit" wire:loading.attr="disabled" class="md-btn md-btn-filled w-full h-12 text-title-small font-bold">
+                            <span wire:loading.remove>تأكيد الكود وإتمام التسليم والأرشفة</span>
+                            <span wire:loading>{{ __('messages.verifying') }}</span>
+                            <span wire:loading.remove class="material-symbols-rounded">check_circle</span>
+                        </button>
+
+                        <div class="flex items-center justify-between pt-2">
+                            <button type="button" wire:click="resendDeliveryOtp" class="text-label-sm text-primary hover:underline flex items-center gap-1">
+                                <span class="material-symbols-rounded" style="font-size:16px">refresh</span>
+                                <span>{{ __('messages.resend_otp') }}</span>
+                            </button>
+
+                            <button type="button" wire:click="closeDeliveryOtpModal" class="text-label-sm text-on-surface-variant hover:underline">
+                                {{ __('messages.cancel') }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     @endif
