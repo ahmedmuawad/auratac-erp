@@ -22,6 +22,7 @@ use App\Livewire\Staff\Index as StaffIndex;
 use App\Livewire\Staff\Roles as RolesIndex;
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
+Route::post('demo-request', [LandingController::class, 'storeDemo'])->name('demo.store');
 Route::get('portal', CustomerPortal::class)->name('portal.index');
 
 Route::get('dashboard', Dashboard::class)

@@ -27,3 +27,6 @@ Thumbs.db
 /barq_alramay.sql
 /Card-*.pdf
 /Docs/_*.txt
+
+# Imported design source (reference only)
+/_design/
