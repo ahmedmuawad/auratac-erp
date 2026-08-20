@@ -323,17 +323,17 @@
                     <div style="font-size:19px; font-weight:600; color:#FFFFFF;">ماذا يكسب مركزك؟</div>
                     <div style="display:flex; flex-direction:column; gap:22px; margin-top:26px;">
                         <div>
-                            <div style="font-family:'IBM Plex Mono',monospace; font-size:26px; color:#8D715B;">−70%</div>
+                            <div style="font-family:'Alexandria','Cairo',sans-serif; font-size:26px; font-weight:700; color:#8D715B;">−70%</div>
                             <div style="font-size:14.5px; line-height:1.8; color:#9DAAB9; margin-top:8px;">وقت تسجيل القطعة مقارنة بالكرت الورقي، عبر شاشة الاستقبال السريع.</div>
                         </div>
                         <div style="height:1px; background:rgba(255,255,255,0.1);"></div>
                         <div>
-                            <div style="font-family:'IBM Plex Mono',monospace; font-size:26px; color:#8D715B;">0 نزاع</div>
+                            <div style="font-family:'Alexandria','Cairo',sans-serif; font-size:26px; font-weight:700; color:#8D715B;">0 نزاع</div>
                             <div style="font-size:14.5px; line-height:1.8; color:#9DAAB9; margin-top:8px;">تسليم موثق بصورة الحالة وتقرير الجودة ورمز تحقق OTP على واتساب المالك.</div>
                         </div>
                         <div style="height:1px; background:rgba(255,255,255,0.1);"></div>
                         <div>
-                            <div style="font-family:'IBM Plex Mono',monospace; font-size:26px; color:#8D715B;">تقرير فوري</div>
+                            <div style="font-family:'Alexandria','Cairo',sans-serif; font-size:26px; font-weight:700; color:#8D715B;">تقرير فوري</div>
                             <div style="font-size:14.5px; line-height:1.8; color:#9DAAB9; margin-top:8px;">إيرادات وأجور صيانة وقطع غيار وضريبة محصلة في أي فترة زمنية.</div>
                         </div>
                     </div>
@@ -417,14 +417,14 @@
 
     {{-- ===== FOOTER ===== --}}
     <footer style="background:#0B1626;">
-        <div class="at-pad at-foot-grid" style="max-width:1280px; margin:0 auto; padding:72px 32px 36px; display:grid; grid-template-columns:1.3fr 1fr 1fr 1fr; gap:48px;">
+        <div class="at-pad at-foot-grid" style="max-width:1280px; margin:0 auto; padding:72px 32px 36px; display:grid; grid-template-columns:1.3fr 1fr 1fr 1fr; gap:48px; text-align:center;">
             <div>
-                <img src="{{ asset('images/brand/aura-tac-logo.svg') }}" alt="AURA TAC" style="height:40px; width:auto; display:block;">
-                <p style="margin:20px 0 0; max-width:320px; font-size:14.5px; line-height:1.85; color:#8494A4;">نظام إدارة متكامل لمراكز صيانة الأسلحة وورش التجهيز التكتيكي.</p>
+                <img src="{{ asset('images/brand/aura-tac-logo.svg') }}" alt="AURA TAC" style="height:40px; width:auto; display:block; margin:0 auto;">
+                <p style="margin:20px auto 0; max-width:320px; font-size:14.5px; line-height:1.85; color:#8494A4;">نظام إدارة متكامل لمراكز صيانة الأسلحة وورش التجهيز التكتيكي.</p>
             </div>
             <div>
                 <div style="font-size:14px; font-weight:600; color:#FFFFFF; margin-bottom:18px;">النظام</div>
-                <div style="display:flex; flex-direction:column; gap:13px; font-size:14px;">
+                <div style="display:flex; flex-direction:column; align-items:center; gap:13px; font-size:14px;">
                     <a href="#modules" class="at-foot-link">وحدات النظام</a>
                     <a href="#services" class="at-foot-link">الخدمات</a>
                     <a href="#system" class="at-foot-link">لقطات النظام</a>
@@ -434,7 +434,7 @@
             </div>
             <div>
                 <div style="font-size:14px; font-weight:600; color:#FFFFFF; margin-bottom:18px;">للمراكز</div>
-                <div style="display:flex; flex-direction:column; gap:13px; font-size:14px;">
+                <div style="display:flex; flex-direction:column; align-items:center; gap:13px; font-size:14px;">
                     <a href="#demo" class="at-foot-link">اطلب عرضاً توضيحياً</a>
                     <a href="#faq" class="at-foot-link">الأسئلة الشائعة</a>
                     <a href="{{ route('portal.index') }}" class="at-foot-link">دخول العميل</a>
@@ -443,8 +443,8 @@
             </div>
             <div>
                 <div style="font-size:14px; font-weight:600; color:#FFFFFF; margin-bottom:18px;">تواصل معنا</div>
-                <div style="display:flex; flex-direction:column; gap:13px; font-size:14px; color:#8494A4;">
-                    <a href="tel:+966530329999" class="at-foot-link" style="font-family:'IBM Plex Mono',monospace; direction:ltr; text-align:start;">+966 53 032 9999</a>
+                <div style="display:flex; flex-direction:column; align-items:center; gap:13px; font-size:14px; color:#8494A4;">
+                    <a href="tel:+966530329999" class="at-foot-link" style="font-family:'IBM Plex Mono',monospace; direction:ltr; unicode-bidi:embed;">+966 53 032 9999</a>
                     <span>info@auratac.com</span>
                     <span>الرياض، المملكة العربية السعودية</span>
                 </div>

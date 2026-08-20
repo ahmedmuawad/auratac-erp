@@ -12,10 +12,8 @@
     {{-- Screen 1: Login / OTP Request --}}
     @if(! $isVerified)
         <div class="max-w-md mx-auto py-12">
-            <div class="bg-onyx rounded-md-xl border border-white/10 shadow-md-4 p-8 text-center space-y-6">
-                <div class="w-16 h-16 rounded-md-lg bg-white flex items-center justify-center p-2 mx-auto mb-2">
-                    <img src="{{ asset(get_setting('logo_path', 'logo.png')) }}" alt="Aura Tac" class="w-full h-full object-contain">
-                </div>
+            <div class="rounded-md-xl border border-white/10 shadow-md-4 p-8 text-center space-y-6" style="background:#0F1C2E;">
+                <img src="{{ asset('images/brand/aura-tac-icon.svg') }}" alt="AURA TAC" class="w-16 h-16 mx-auto mb-2">
                 <div>
                     <h1 class="text-headline text-on-onyx font-bold">دخول العميل — {{ get_setting('system_name', 'AURA TAC') }}</h1>
                     <p class="text-label-sm text-on-onyx-variant mt-1">تابع حالة صيانة سلاحك وكروت العمل والموقف المالي بأمان تام.</p>
@@ -84,7 +82,7 @@
         {{-- Screen 2: Verified Customer Dashboard --}}
         
         {{-- Profile Header Banner --}}
-        <div class="bg-onyx p-6 rounded-md-lg flex flex-col md:flex-row md:items-center justify-between gap-5 shadow-md">
+        <div class="p-6 rounded-md-lg flex flex-col md:flex-row md:items-center justify-between gap-5 shadow-md" style="background:#0F1C2E;">
             <div class="flex items-center gap-5">
                 <div class="w-14 h-14 rounded-md-lg bg-primary/20 text-primary flex items-center justify-center text-title-lg font-bold">
                     {{ mb_substr($verifiedCustomer->full_name, 0, 1) }}
@@ -103,7 +101,7 @@
             <div class="flex items-center gap-3">
                 <button wire:click="logoutPortal" class="md-btn bg-white/10 text-on-onyx hover:bg-white/20">
                     <span class="material-symbols-rounded">logout</span>
-                    خروج من البورتال
+                    تسجيل خروج
                 </button>
             </div>
         </div>
@@ -180,7 +178,7 @@
                                 $paid = (float)($card->paid_amount ?? 0);
                                 $rem = (float)($card->remaining_amount ?? ($tot - $paid));
                             @endphp
-                            <div class="p-4 bg-onyx rounded-md-md space-y-2 text-label-sm mb-4">
+                            <div class="p-4 rounded-md-md space-y-2 text-label-sm mb-4" style="background:#0F1C2E;">
                                 <div class="flex justify-between items-center text-on-onyx-variant">
                                     <span>المجموع (قبل الضريبة)</span>
                                     <span class="tabular-nums font-mono">{{ number_format($sub, 2) }} {{ __('messages.sar') }}</span>

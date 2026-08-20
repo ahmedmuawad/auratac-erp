@@ -15,16 +15,10 @@
 <body class="antialiased bg-background text-on-background font-sans min-h-screen flex flex-col justify-between">
 
     {{-- Top Bar Header --}}
-    <header class="bg-onyx text-on-onyx border-b border-white/10 sticky top-0 z-50 shadow-md-2">
+    <header class="text-on-onyx border-b border-white/10 sticky top-0 z-50 shadow-md-2" style="background:#0F1C2E;">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <a href="{{ route('landing') }}" class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-md-md bg-white flex items-center justify-center p-1.5 shrink-0">
-                    <img src="{{ asset(get_setting('logo_path', 'logo.png')) }}" alt="Aura Tac" class="w-full h-full object-contain">
-                </div>
-                <div>
-                    <h1 class="text-title-lg text-on-onyx tracking-wide font-bold">{{ get_setting('system_name', 'AURA TAC') }}</h1>
-                    <p class="text-label-sm text-primary uppercase tracking-widest font-mono">بورتال تتبع الصيانة والأمان 🔒</p>
-                </div>
+            <a href="{{ route('landing') }}" class="flex items-center">
+                <img src="{{ asset('images/brand/aura-tac-logo.svg') }}" alt="AURA TAC" class="h-10 w-auto">
             </a>
 
             <div class="flex items-center gap-4">
