@@ -437,14 +437,14 @@
                 <div style="display:flex; flex-direction:column; gap:13px; font-size:14px;">
                     <a href="#demo" class="at-foot-link">اطلب عرضاً توضيحياً</a>
                     <a href="#faq" class="at-foot-link">الأسئلة الشائعة</a>
-                    <a href="{{ route('portal.index') }}" class="at-foot-link">بورتال العملاء</a>
+                    <a href="{{ route('portal.index') }}" class="at-foot-link">دخول العميل</a>
                     <a href="{{ route('login') }}" class="at-foot-link">دخول الموظفين</a>
                 </div>
             </div>
             <div>
                 <div style="font-size:14px; font-weight:600; color:#FFFFFF; margin-bottom:18px;">تواصل معنا</div>
                 <div style="display:flex; flex-direction:column; gap:13px; font-size:14px; color:#8494A4;">
-                    <span style="font-family:'IBM Plex Mono',monospace; direction:ltr; text-align:start;">+966 50 123 4567</span>
+                    <a href="tel:+966530329999" class="at-foot-link" style="font-family:'IBM Plex Mono',monospace; direction:ltr; text-align:start;">+966 53 032 9999</a>
                     <span>info@auratac.com</span>
                     <span>الرياض، المملكة العربية السعودية</span>
                 </div>
