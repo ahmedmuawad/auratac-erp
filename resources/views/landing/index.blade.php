@@ -451,7 +451,7 @@
             </div>
         </div>
         <div style="border-top:1px solid rgba(255,255,255,0.08);">
-            <div class="at-pad" style="max-width:1280px; margin:0 auto; padding:22px 32px; font-size:12.5px; color:#66768A; text-align:center;">© {{ date('Y') }} AURA TAC — جميع الحقوق محفوظة. تصميم وتطوير S-PLUS</div>
+            <div class="at-pad" style="max-width:1280px; margin:0 auto; padding:22px 32px; font-size:12.5px; color:#66768A; text-align:center;">© {{ date('Y') }} AURA TAC — جميع الحقوق محفوظة. تصميم وتطوير <a href="https://s-plus.me" target="_blank" rel="noopener" style="color:#8D715B; font-weight:600;">S-PLUS</a></div>
         </div>
     </footer>
 

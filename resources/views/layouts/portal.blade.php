@@ -42,7 +42,7 @@
 
     {{-- Footer --}}
     <footer class="p-6 text-center text-label-sm uppercase tracking-widest text-on-surface-variant border-t bg-surface" style="border-color:var(--md-outline-variant)">
-        &copy; {{ date('Y') }} Aura Tac - {{ get_setting('footer_text', 'تصميم وتطوير S-Plus') }}
+        &copy; {{ date('Y') }} Aura Tac - {!! str_ireplace('S-Plus', '<a href="https://s-plus.me" target="_blank" rel="noopener" class="text-primary font-bold hover:underline">S-PLUS</a>', e(get_setting('footer_text', 'تصميم وتطوير S-Plus'))) !!}
     </footer>
 
     @livewireScripts

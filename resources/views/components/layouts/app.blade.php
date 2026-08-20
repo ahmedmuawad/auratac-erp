@@ -33,7 +33,7 @@
 
             <!-- Footer -->
             <footer class="p-4 text-center text-sm text-slate-500 border-t bg-white">
-                &copy; {{ date('Y') }} Aura Tac - {{ get_setting('footer_text', 'تصميم وتطوير S-Plus') }}
+                &copy; {{ date('Y') }} Aura Tac - {!! str_ireplace('S-Plus', '<a href="https://s-plus.me" target="_blank" rel="noopener" class="text-primary font-bold hover:underline">S-PLUS</a>', e(get_setting('footer_text', 'تصميم وتطوير S-Plus'))) !!}
             </footer>
         </main>
     </div>
