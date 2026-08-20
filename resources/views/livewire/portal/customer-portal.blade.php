@@ -17,7 +17,7 @@
                     <img src="{{ asset(get_setting('logo_path', 'logo.png')) }}" alt="Aura Tac" class="w-full h-full object-contain">
                 </div>
                 <div>
-                    <h1 class="text-headline text-on-onyx font-bold">بورتال العميل — {{ get_setting('system_name', 'AURA TAC') }}</h1>
+                    <h1 class="text-headline text-on-onyx font-bold">دخول العميل — {{ get_setting('system_name', 'AURA TAC') }}</h1>
                     <p class="text-label-sm text-on-onyx-variant mt-1">تابع حالة صيانة سلاحك وكروت العمل والموقف المالي بأمان تام.</p>
                 </div>
 
