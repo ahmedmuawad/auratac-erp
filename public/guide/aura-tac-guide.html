@@ -1,0 +1,894 @@
+<title>دليل نظام Aura Tac</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  /* ===== Tokens: light (bare :root) ===== */
+  :root{
+    --bg:#F4EFE8; --surface:#FFFFFF; --surface-2:#FBF8F2;
+    --ink:#1C242F; --ink-soft:#55606F; --muted:#8B8477;
+    --line:#E7DFD3; --line-soft:#F0EADF;
+    --navy:#0F1C2E; --navy-2:#16273C; --on-navy:#EAF0F6; --on-navy-soft:#9DAAB9;
+    --bronze:#8D715B; --bronze-2:#6F5A47; --bronze-tint:#F0E8DF;
+    --ok:#3E7D5A; --ok-tint:#E5F0E9;
+    --warn:#9A6A16; --warn-tint:#F6EBD7;
+    --info:#3F6C93; --info-tint:#E5EDF4;
+    --tert:#4E7688; --tert-tint:#E5EEF1;
+    --danger:#AE4A43; --danger-tint:#F6E4E2;
+    --shadow:0 1px 2px rgba(20,25,35,.04), 0 8px 30px rgba(20,25,35,.06);
+    --radius:16px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#0E141C; --surface:#161F2A; --surface-2:#1B2732;
+      --ink:#E7ECF2; --ink-soft:#A7B2BF; --muted:#7F8B99;
+      --line:#26313E; --line-soft:#1F2A36;
+      --navy:#0A1119; --navy-2:#132234; --on-navy:#EAF0F6; --on-navy-soft:#93A2B3;
+      --bronze:#B99C7B; --bronze-2:#C9AE8E; --bronze-tint:#211C16;
+      --ok:#63A683; --ok-tint:#16241D;
+      --warn:#CBA157; --warn-tint:#241D10;
+      --info:#6E9CC4; --info-tint:#101c26;
+      --tert:#7BA3B6; --tert-tint:#111f25;
+      --danger:#D07E76; --danger-tint:#251413;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E141C; --surface:#161F2A; --surface-2:#1B2732;
+    --ink:#E7ECF2; --ink-soft:#A7B2BF; --muted:#7F8B99;
+    --line:#26313E; --line-soft:#1F2A36;
+    --navy:#0A1119; --navy-2:#132234; --on-navy:#EAF0F6; --on-navy-soft:#93A2B3;
+    --bronze:#B99C7B; --bronze-2:#C9AE8E; --bronze-tint:#211C16;
+    --ok:#63A683; --ok-tint:#16241D;
+    --warn:#CBA157; --warn-tint:#241D10;
+    --info:#6E9CC4; --info-tint:#101c26;
+    --tert:#7BA3B6; --tert-tint:#111f25;
+    --danger:#D07E76; --danger-tint:#251413;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth; direction:rtl}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{
+    direction:rtl; margin:0; background:var(--bg); color:var(--ink);
+    font-family:'Cairo',system-ui,sans-serif; line-height:1.75;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  .mono{font-family:'IBM Plex Mono',ui-monospace,monospace; direction:ltr; unicode-bidi:isolate}
+  a{color:var(--bronze)}
+  h1,h2,h3,h4{text-wrap:balance; line-height:1.3; margin:0}
+
+  /* ===== Layout ===== */
+  .layout{display:grid; grid-template-columns:288px minmax(0,1fr); gap:0; max-width:1440px; margin:0 auto}
+
+  /* Sidebar */
+  .side{
+    position:sticky; top:0; align-self:start; height:100vh; overflow:auto;
+    background:var(--surface); border-inline-start:1px solid var(--line);
+    padding:26px 22px; display:flex; flex-direction:column; gap:18px;
+  }
+  .brand{display:flex; align-items:center; gap:12px}
+  .brand .mark{width:42px;height:42px;border-radius:50%;border:1.6px solid var(--bronze);display:flex;align-items:center;justify-content:center;flex:none}
+  .brand .mark i{width:10px;height:10px;border-radius:50%;background:var(--bronze);display:block}
+  .brand b{font-size:17px;letter-spacing:.14em;font-family:'IBM Plex Mono',monospace}
+  .brand span{display:block;font-size:9px;letter-spacing:.24em;color:var(--bronze);font-family:'IBM Plex Mono',monospace;margin-top:3px}
+
+  details.toc > summary{
+    display:none; list-style:none; cursor:pointer; font-weight:700;
+    padding:12px 14px; border:1px solid var(--line); border-radius:12px; background:var(--surface-2);
+  }
+  details.toc > summary::-webkit-details-marker{display:none}
+  .toc-body{display:flex; flex-direction:column; gap:4px}
+  .toc-group{margin-top:14px}
+  .toc-group > p{margin:0 6px 6px; font-size:11px; font-weight:700; letter-spacing:.14em; color:var(--muted); text-transform:uppercase}
+  .toc a{
+    display:flex; align-items:center; gap:9px; text-decoration:none; color:var(--ink-soft);
+    padding:7px 11px; border-radius:9px; font-size:14.5px; font-weight:500; transition:background .15s,color .15s;
+  }
+  .toc a .dot{width:6px;height:6px;border-radius:50%;background:var(--line);flex:none;transition:background .15s}
+  .toc a:hover{background:var(--surface-2); color:var(--ink)}
+  .toc a.active{background:var(--bronze-tint); color:var(--bronze-2); font-weight:700}
+  .toc a.active .dot{background:var(--bronze)}
+
+  .theme-toggle{
+    margin-top:auto; display:flex; align-items:center; justify-content:center; gap:8px;
+    border:1px solid var(--line); background:var(--surface-2); color:var(--ink-soft);
+    border-radius:10px; padding:10px; font-family:inherit; font-size:13.5px; font-weight:600; cursor:pointer;
+  }
+  .theme-toggle:hover{color:var(--ink)}
+
+  /* Main */
+  main{min-width:0; padding:0 clamp(20px,3.5vw,56px) 90px}
+
+  /* Hero */
+  .hero{
+    background:linear-gradient(160deg,var(--navy) 0%,var(--navy-2) 100%);
+    color:var(--on-navy); border-radius:0 0 var(--radius) var(--radius);
+    padding:clamp(40px,6vw,72px) clamp(24px,4vw,56px);
+    margin:0 calc(-1*clamp(20px,3.5vw,56px)) 40px;
+    position:relative; overflow:hidden;
+  }
+  .hero::after{content:"";position:absolute;inset:0;background:radial-gradient(720px 420px at 88% -10%,rgba(141,113,91,.28),transparent 70%);pointer-events:none}
+  .hero .kicker{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:6px 14px;font-size:12.5px;color:var(--on-navy-soft);margin-bottom:18px}
+  .hero .kicker b{width:6px;height:6px;border-radius:50%;background:var(--bronze);display:block}
+  .hero h1{font-size:clamp(30px,4.6vw,50px);font-weight:800;letter-spacing:-.01em}
+  .hero h1 em{font-style:normal;color:var(--bronze-2);}
+  .hero p{max-width:60ch;margin:16px 0 0;color:#C6D0DB;font-size:clamp(15px,1.5vw,17.5px)}
+  .hero .facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;position:relative;z-index:1}
+  .hero .facts span{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:8px 14px;font-size:13px;color:var(--on-navy)}
+  .hero .facts b{color:var(--bronze-2);font-weight:700}
+
+  /* Generic section */
+  section{scroll-margin-top:20px; margin-bottom:36px}
+  .group-label{display:flex;align-items:center;gap:14px;margin:48px 0 20px}
+  .group-label span{font-size:12px;font-weight:800;letter-spacing:.18em;color:var(--bronze);text-transform:uppercase;font-family:'IBM Plex Mono',monospace}
+  .group-label::after{content:"";height:1px;flex:1;background:var(--line)}
+
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(20px,2.6vw,30px)}
+  .lead{color:var(--ink-soft);font-size:16px;margin:10px 0 0;max-width:70ch}
+
+  .page-head{border-bottom:1px solid var(--line-soft);padding-bottom:16px;margin-bottom:18px}
+  .eyebrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px}
+  .page-head h3{font-size:clamp(20px,2.4vw,26px);font-weight:800}
+  .page-num{font-family:'IBM Plex Mono',monospace;color:var(--bronze);font-size:14px;font-weight:600;margin-inline-end:4px}
+
+  .chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 11px;font-size:12px;font-weight:600;white-space:nowrap;border:1px solid transparent}
+  .chip .mono{font-size:11.5px}
+  .chip-route{background:var(--navy);color:var(--on-navy)}
+  :root[data-theme="dark"] .chip-route,:root:not([data-theme="light"]) .chip-route{background:var(--navy-2)}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .chip-route{background:var(--navy-2)}}
+  .chip-perm{background:var(--bronze-tint);color:var(--bronze-2);border-color:transparent}
+  .chip-open{background:var(--ok-tint);color:var(--ok)}
+  /* role chips */
+  .r-mgr{background:var(--bronze-tint);color:var(--bronze-2)}
+  .r-rec{background:var(--info-tint);color:var(--info)}
+  .r-tech{background:var(--warn-tint);color:var(--warn)}
+  .r-qa{background:var(--tert-tint);color:var(--tert)}
+  .r-pub{background:var(--surface-2);color:var(--muted);border-color:var(--line)}
+
+  .who{display:flex;flex-wrap:wrap;align-items:center;gap:7px;margin-top:14px;font-size:13px;color:var(--muted)}
+
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:18px}
+  .block h4{font-size:14px;font-weight:800;color:var(--bronze-2);display:flex;align-items:center;gap:8px;margin-bottom:10px;letter-spacing:.01em}
+  .block h4::before{content:"";width:14px;height:2px;background:var(--bronze);border-radius:2px}
+  .block ul{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:7px}
+  .block li{font-size:14.5px;color:var(--ink)}
+  .block li b{color:var(--ink);font-weight:700}
+  .field-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+  .field-list li{display:flex;gap:10px;align-items:baseline;font-size:14px;padding-bottom:8px;border-bottom:1px dashed var(--line-soft)}
+  .field-list li:last-child{border-bottom:0}
+  .field-list .fname{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--bronze-2);flex:none;min-width:150px}
+
+  .note{display:flex;gap:10px;margin-top:18px;padding:13px 16px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);font-size:13.5px;color:var(--ink-soft)}
+  .note.warn{background:var(--warn-tint);border-color:transparent;color:var(--warn)}
+  .note.danger{background:var(--danger-tint);border-color:transparent;color:var(--danger)}
+  .note b{color:inherit}
+  .note .ic{flex:none;font-weight:800}
+
+  /* Status flow */
+  .flow{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch;margin-top:8px}
+  .stp{flex:1 1 150px;min-width:150px;border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--surface-2);position:relative}
+  .stp .n{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted)}
+  .stp .s{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted);direction:ltr;display:block;margin-top:2px}
+  .stp b{display:block;font-size:16px;margin-top:6px}
+  .stp p{margin:6px 0 0;font-size:13px;color:var(--ink-soft)}
+  .stp::before{content:"";position:absolute;top:0;inset-inline-start:16px;inset-inline-end:16px;height:4px;border-radius:0 0 4px 4px}
+  .stp.w::before{background:var(--warn)} .stp.p::before{background:var(--info)}
+  .stp.t::before{background:var(--tert)} .stp.o::before{background:var(--ok)} .stp.s2::before{background:var(--muted)}
+
+  /* Roles cards */
+  .roles-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:8px}
+  .role-card{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--surface)}
+  .role-card .top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .role-card h4{font-size:17px;font-weight:800}
+  .role-card .rc{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted)}
+  .role-card ul{margin:12px 0 0;padding-inline-start:18px;font-size:13.5px;color:var(--ink-soft);display:flex;flex-direction:column;gap:5px}
+
+  /* Matrix table */
+  .table-wrap{overflow-x:auto;margin-top:8px;border:1px solid var(--line);border-radius:14px}
+  table{border-collapse:collapse;width:100%;min-width:560px;font-size:14px}
+  th,td{padding:11px 14px;text-align:start;border-bottom:1px solid var(--line-soft)}
+  thead th{background:var(--surface-2);font-weight:800;font-size:13px;position:sticky;top:0}
+  tbody tr:last-child td{border-bottom:0}
+  td.c{text-align:center;font-weight:800}
+  .yes{color:var(--ok)} .no{color:var(--muted);opacity:.6}
+  .rowh{font-weight:600;color:var(--ink)}
+  .rowh .mono{display:block;font-size:11px;color:var(--muted)}
+
+  /* Credentials */
+  .cred-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:8px}
+  .cred{border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--surface-2)}
+  .cred h4{font-size:15px;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .cred .kv{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:4px 0;border-bottom:1px dashed var(--line-soft)}
+  .cred .kv:last-child{border-bottom:0}
+  .cred .kv b{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--bronze-2)}
+
+  .backtop{position:fixed;inset-block-end:22px;inset-inline-start:22px;width:46px;height:46px;border-radius:50%;background:var(--navy);color:var(--on-navy);border:0;cursor:pointer;font-size:20px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+  .backtop.show{opacity:1;pointer-events:auto}
+
+  /* Footer */
+  .foot{border-top:1px solid var(--line);margin-top:40px;padding-top:24px;color:var(--muted);font-size:13px;text-align:center}
+  .foot a{font-weight:700}
+
+  @media (max-width:920px){
+    .layout{grid-template-columns:1fr}
+    .side{position:static;height:auto;border-inline-start:0;border-bottom:1px solid var(--line);flex-direction:column}
+    details.toc > summary{display:block}
+    details.toc:not([open]) .toc-body{display:none}
+    .theme-toggle{margin-top:8px}
+    .cols{grid-template-columns:1fr}
+  }
+  :focus-visible{outline:2px solid var(--bronze);outline-offset:2px;border-radius:6px}
+
+  /* screenshots */
+  .shot{margin:0 0 20px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface-2);box-shadow:var(--shadow)}
+  .shot img{display:block;width:100%;height:auto}
+  .shot figcaption{padding:9px 15px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);background:var(--surface);display:flex;align-items:center;gap:8px}
+  .shot figcaption::before{content:"▦";color:var(--bronze)}
+</style>
+
+<div class="layout">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="side">
+    <div class="brand">
+      <div class="mark"><i></i></div>
+      <div><b>AURA TAC</b><span>MAINTENANCE SYSTEM</span></div>
+    </div>
+
+    <details class="toc" open>
+      <summary>المحتويات ▾</summary>
+      <nav class="toc-body">
+        <div class="toc-group">
+          <p>البداية</p>
+          <a href="#overview"><span class="dot"></span>نظرة عامة</a>
+          <a href="#flow"><span class="dot"></span>دورة حياة كرت الصيانة</a>
+          <a href="#roles"><span class="dot"></span>الأدوار والصلاحيات</a>
+          <a href="#login"><span class="dot"></span>تسجيل الدخول</a>
+        </div>
+        <div class="toc-group">
+          <p>الاستقبال والبيانات</p>
+          <a href="#dashboard"><span class="dot"></span>لوحة التحكم</a>
+          <a href="#customers"><span class="dot"></span>العملاء</a>
+          <a href="#items"><span class="dot"></span>سجل الأصناف</a>
+          <a href="#cards"><span class="dot"></span>كروت الصيانة</a>
+          <a href="#quick"><span class="dot"></span>الاستقبال السريع</a>
+        </div>
+        <div class="toc-group">
+          <p>قسم الصيانة</p>
+          <a href="#tech"><span class="dot"></span>لوحة الفنيين</a>
+          <a href="#qa"><span class="dot"></span>فحص الجودة</a>
+          <a href="#delivery"><span class="dot"></span>التسليم والاستلام</a>
+        </div>
+        <div class="toc-group">
+          <p>المالية والتقارير</p>
+          <a href="#debts"><span class="dot"></span>الديون والتحصيل</a>
+          <a href="#search"><span class="dot"></span>البحث الشامل</a>
+          <a href="#analytics"><span class="dot"></span>التقارير المالية</a>
+          <a href="#notif"><span class="dot"></span>الإشعارات</a>
+        </div>
+        <div class="toc-group">
+          <p>الإدارة</p>
+          <a href="#staff"><span class="dot"></span>إدارة الموظفين</a>
+          <a href="#rolesmgmt"><span class="dot"></span>الأدوار والصلاحيات</a>
+          <a href="#settings"><span class="dot"></span>الإعدادات</a>
+        </div>
+        <div class="toc-group">
+          <p>العميل</p>
+          <a href="#portal"><span class="dot"></span>بورتال العميل</a>
+        </div>
+      </nav>
+    </details>
+
+    <button class="theme-toggle" id="themeBtn" aria-label="تبديل السمة">🌗 <span>تبديل الوضع الليلي</span></button>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main>
+    <header class="hero">
+      <div class="kicker"><b></b> دليل التشغيل الرسمي</div>
+      <h1>دليل استخدام نظام <em>Aura Tac</em><br>لإدارة مراكز صيانة الأسلحة</h1>
+      <p>شرح كامل لكل شاشة في النظام — إيه وظيفتها، مين يقدر يفتحها، اللي بيظهر عليها، والإجراءات المتاحة — مرتّبة على دورة العمل الحقيقية من استقبال القطعة حتى تسليمها.</p>
+      <div class="facts">
+        <span><b>4</b> أدوار وظيفية</span>
+        <span><b>17</b> شاشة</span>
+        <span><b>6</b> حالات لكل كرت</span>
+        <span>تحقق <b>OTP</b> عبر واتساب</span>
+        <span>ضريبة <b>15%</b> تلقائية</span>
+      </div>
+    </header>
+
+    <!-- ===== OVERVIEW ===== -->
+    <section id="overview">
+      <div class="card">
+        <div class="page-head"><h3>نظرة عامة على النظام</h3>
+          <p class="lead">Aura Tac نظام سحابي متكامل لإدارة مركز صيانة الأسلحة: بيتابع القطعة من لحظة استقبالها، مروراً بعمل الفني وفحص الجودة، حتى التسليم النهائي بالتحقق والفاتورة الضريبية — وكل خطوة مربوطة بصلاحيات وإشعارات ورسائل واتساب للعميل.</p>
+        </div>
+        <div class="cols">
+          <div class="block">
+            <h4>الفكرة باختصار</h4>
+            <ul>
+              <li>كل قطعة ليها <b>كرت إلكتروني</b> برقم وباركود بيتحرّك بين مراحل العمل.</li>
+              <li>كل <b>دور وظيفي</b> بيشوف ويعمل حاجات محددة بصلاحياته فقط.</li>
+              <li>الحسابات المالية (أجور + قطع + <b>ضريبة 15%</b>) بتتحسب تلقائياً.</li>
+              <li>تأكيد هوية العميل عند الاستلام والتسليم بـ <b>كود OTP</b> على واتساب.</li>
+            </ul>
+          </div>
+          <div class="block">
+            <h4>الأدوار الأربعة</h4>
+            <ul>
+              <li><b>المدير</b> — صلاحية كاملة على كل شيء + الإعدادات والتقارير.</li>
+              <li><b>الاستقبال</b> — العملاء والأصناف وفتح الكروت.</li>
+              <li><b>الفني</b> — تنفيذ الصيانة وتسجيل جلسات العمل.</li>
+              <li><b>الجودة</b> — مراجعة الكروت واعتمادها والتسليم.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="note"><span class="ic">💡</span><div>الشرح ده مرتّب بنفس ترتيب العمل الحقيقي. لو انت موظف جديد، اقرأ <b>دورة حياة الكرت</b> الأول، بعدين روح للقسم اللي بيخصّ دورك.</div></div>
+      </div>
+    </section>
+
+    <!-- ===== FLOW ===== -->
+    <section id="flow">
+      <div class="card">
+        <div class="page-head"><h3>دورة حياة كرت الصيانة</h3>
+          <p class="lead">كل كرت بيمرّ بـ 6 حالات. الحالة بتتغيّر تلقائياً مع كل خطوة، وبتتحكّم في مين يشوف الكرت وفين.</p>
+        </div>
+        <div class="flow">
+          <div class="stp w"><span class="n">01</span><span class="s">pending</span><b>بانتظار البدء</b><p>اتفتح الكرت في الاستقبال وبيستنى فني يبدأ فيه.</p></div>
+          <div class="stp p"><span class="n">02</span><span class="s">in_progress</span><b>قيد التنفيذ</b><p>الفني سجّل أول جلسة عمل — الكرت شغّال دلوقتي.</p></div>
+          <div class="stp w"><span class="n">—</span><span class="s">waiting_parts</span><b>بانتظار القطع</b><p>إيقاف مؤقت لحين توفّر قطعة غيار (اختياري).</p></div>
+          <div class="stp t"><span class="n">03</span><span class="s">ready_for_qa</span><b>بانتظار الجودة</b><p>الفني خلّص وبعت الكرت لمشرف الجودة.</p></div>
+          <div class="stp o"><span class="n">04</span><span class="s">ready</span><b>جاهز للتسليم</b><p>الجودة اعتمدت الكرت — جاهز يتسلّم للعميل.</p></div>
+          <div class="stp s2"><span class="n">05</span><span class="s">delivered</span><b>تم التسليم</b><p>اتسلّم بالتحقق وسُجّلت الفاتورة — الكرت مؤرشف.</p></div>
+        </div>
+        <div class="note"><span class="ic">↩︎</span><div>لو <b>الجودة رفضت</b> الكرت، بيرجع تلقائياً لحالة <b>قيد التنفيذ</b> ويتبعت إشعار للفني. و<b>بانتظار القطع</b> حالة جانبية بيحطّها الفني والكرت بيفضل عنده لحد ما يكمّل.</div></div>
+      </div>
+    </section>
+
+    <!-- ===== ROLES ===== -->
+    <section id="roles">
+      <div class="card">
+        <div class="page-head"><h3>الأدوار والصلاحيات</h3>
+          <p class="lead">النظام بيتحكّم في الوصول على مستويين: إخفاء العناصر من القائمة الجانبية، ومنع فتح الصفحة بالرابط المباشر (403). المدير بيعدّي على كل حاجة تلقائياً.</p>
+        </div>
+        <div class="roles-grid">
+          <div class="role-card">
+            <div class="top"><h4>المدير العام</h4><span class="chip r-mgr">manager</span></div>
+            <ul><li>كل الشاشات والصلاحيات</li><li>الموظفين والأدوار</li><li>الإعدادات والتقارير المالية</li></ul>
+          </div>
+          <div class="role-card">
+            <div class="top"><h4>موظف الاستقبال</h4><span class="chip r-rec">reception</span></div>
+            <ul><li>العملاء والأصناف</li><li>فتح كروت + الاستقبال السريع</li><li>البحث الشامل</li></ul>
+          </div>
+          <div class="role-card">
+            <div class="top"><h4>فني الصيانة</h4><span class="chip r-tech">technician</span></div>
+            <ul><li>كروت الصيانة (عرض)</li><li>لوحة الفنيين</li><li>تسجيل جلسات العمل</li></ul>
+          </div>
+          <div class="role-card">
+            <div class="top"><h4>مشرف الجودة</h4><span class="chip r-qa">qa</span></div>
+            <ul><li>كروت الصيانة (عرض)</li><li>فحص الجودة</li><li>التسليم والاستلام</li></ul>
+          </div>
+        </div>
+
+        <h4 style="margin:26px 0 4px;font-size:15px">مصفوفة الوصول للصفحات</h4>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>الصفحة</th><th class="c">المدير</th><th class="c">الاستقبال</th><th class="c">الفني</th><th class="c">الجودة</th></tr></thead>
+            <tbody>
+              <tr><td class="rowh">لوحة التحكم <span class="mono">dashboard</span></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+              <tr><td class="rowh">العملاء <span class="mono">customers.view</span></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c no">✗</td><td class="c no">✗</td></tr>
+              <tr><td class="rowh">سجل الأصناف <span class="mono">items.view</span></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c no">✗</td><td class="c no">✗</td></tr>
+              <tr><td class="rowh">كروت الصيانة <span class="mono">maintenance.view</span></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+              <tr><td class="rowh">الاستقبال السريع <span class="mono">maintenance.create</span></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c no">✗</td><td class="c no">✗</td></tr>
+              <tr><td class="rowh">لوحة الفنيين <span class="mono">maintenance.tech_panel</span></td><td class="c yes">✓</td><td class="c no">✗</td><td class="c yes">✓</td><td class="c no">✗</td></tr>
+              <tr><td class="rowh">فحص الجودة + التسليم <span class="mono">maintenance.qa_delivery</span></td><td class="c yes">✓</td><td class="c no">✗</td><td class="c no">✗</td><td class="c yes">✓</td></tr>
+              <tr><td class="rowh">البحث الشامل <span class="mono">reports.view</span></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c no">✗</td><td class="c no">✗</td></tr>
+              <tr><td class="rowh">الديون + التقارير المالية <span class="mono">financials.view</span></td><td class="c yes">✓</td><td class="c no">✗</td><td class="c no">✗</td><td class="c no">✗</td></tr>
+              <tr><td class="rowh">الموظفين + الأدوار + الإعدادات <span class="mono">staff.manage</span></td><td class="c yes">✓</td><td class="c no">✗</td><td class="c no">✗</td><td class="c no">✗</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note"><span class="ic">🔧</span><div>المدير يقدر يعدّل صلاحيات أي دور — أو يعمل أدوار جديدة — من صفحة <a href="#rolesmgmt">الأدوار والصلاحيات</a> من غير ما يلمس الكود.</div></div>
+      </div>
+    </section>
+
+    <!-- ===== LOGIN ===== -->
+    <section id="login">
+      <div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/login.png" alt="شاشة تسجيل دخول الموظفين — اسم المستخدم وكلمة المرور ثم كود التحقق"><figcaption>شاشة تسجيل دخول الموظفين — اسم المستخدم وكلمة المرور ثم كود التحقق</figcaption></figure>
+        <div class="page-head">
+          <div class="eyebrow"><span class="chip chip-route"><span class="mono">login</span></span><span class="chip chip-open">دخول الموظفين</span></div>
+          <h3>تسجيل الدخول</h3>
+          <p class="lead">دخول الموظفين للنظام على خطوتين: اسم المستخدم وكلمة المرور، بعدين كود التحقق.</p>
+        </div>
+        <div class="cols">
+          <div class="block">
+            <h4>الخطوات</h4>
+            <ul>
+              <li><b>الخطوة 1:</b> اكتب اسم المستخدم وكلمة المرور واضغط دخول.</li>
+              <li><b>الخطوة 2:</b> اكتب كود التحقق المكوّن من 6 أرقام واضغط تأكيد.</li>
+              <li>فيه اختيار «تذكّرني»، وتبديل اللغة عربي/إنجليزي، ورابط للبورتال.</li>
+            </ul>
+          </div>
+          <div class="block">
+            <h4>ملاحظات مهمة</h4>
+            <ul>
+              <li>كود التحقق حالياً <b>ثابت</b> ولا يُرسَل فعلياً (حسب طلب العميل مؤقتاً).</li>
+              <li>الحساب الأول هو المدير باسم <span class="mono">admin</span>.</li>
+              <li>غيّر كلمة المرور بعد أول دخول من صفحة الملف الشخصي.</li>
+            </ul>
+          </div>
+        </div>
+        <h4 style="margin:22px 0 4px;font-size:15px">بيانات الدخول الافتراضية (بيئة التجربة)</h4>
+        <div class="cred-grid">
+          <div class="cred"><h4><span class="chip r-mgr">مدير</span></h4>
+            <div class="kv"><span>المستخدم</span><b>admin</b></div><div class="kv"><span>كلمة المرور</span><b>ChangeMe@123</b></div><div class="kv"><span>كود التحقق</span><b>123456</b></div></div>
+          <div class="cred"><h4><span class="chip r-rec">استقبال</span></h4>
+            <div class="kv"><span>المستخدم</span><b>reception</b></div><div class="kv"><span>كلمة المرور</span><b>ChangeMe@123</b></div><div class="kv"><span>كود التحقق</span><b>123456</b></div></div>
+          <div class="cred"><h4><span class="chip r-tech">فني</span></h4>
+            <div class="kv"><span>المستخدم</span><b>tech1</b></div><div class="kv"><span>كلمة المرور</span><b>ChangeMe@123</b></div><div class="kv"><span>كود التحقق</span><b>123456</b></div></div>
+          <div class="cred"><h4><span class="chip r-qa">جودة</span></h4>
+            <div class="kv"><span>المستخدم</span><b>qa1</b></div><div class="kv"><span>كلمة المرور</span><b>ChangeMe@123</b></div><div class="kv"><span>كود التحقق</span><b>123456</b></div></div>
+        </div>
+        <div class="note danger"><span class="ic">⚠︎</span><div>دي بيانات تجربة — <b>غيّر كل كلمات المرور</b> قبل التشغيل الفعلي، وفعّل إرسال كود تحقق حقيقي بدل الكود الثابت.</div></div>
+      </div>
+    </section>
+
+    <!-- ============ GROUP: RECEPTION ============ -->
+    <div class="group-label"><span>الاستقبال والبيانات</span></div>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/dashboard.png" alt="لوحة التحكم — عدّادات المراحل والمؤشرات والرسوم البيانية وآخر الكروت"><figcaption>لوحة التحكم — عدّادات المراحل والمؤشرات والرسوم البيانية وآخر الكروت</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">01</span><span class="chip chip-route"><span class="mono">dashboard</span></span><span class="chip chip-open">متاحة للجميع</span></div>
+        <h3>لوحة التحكم</h3>
+        <p class="lead">شاشة البداية بعد الدخول — بتدّيك صورة سريعة عن حالة الشغل: عدّادات المراحل، مؤشرات الأداء، الإيراد، وآخر الكروت.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span><span class="chip r-rec">استقبال</span><span class="chip r-tech">فني</span><span class="chip r-qa">جودة</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر على الشاشة</h4><ul>
+          <li>4 عدّادات: <b>بانتظار البدء</b>، <b>قيد التنفيذ</b>، <b>بانتظار الجودة</b>، <b>جاهز</b>.</li>
+          <li>4 بطاقات مؤشرات: عدد العملاء، الأصناف، إجمالي الكروت، وإجمالي <b>المديونيات</b>.</li>
+          <li>رسم بياني لإيراد آخر 7 أيام + شارة إيراد الشهر الحالي.</li>
+          <li>رسم دائري لتوزيع الكروت حسب الحالة + آخر 6 كروت.</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات المتاحة</h4><ul>
+          <li>اضغط أي عدّاد حالة عشان تفتح قائمة الكروت مفلترة بنفس الحالة.</li>
+          <li>«عرض الكل» أو أي كرت يوّدّيك لقائمة كروت الصيانة.</li>
+          <li>الشاشة للعرض فقط — مفيش إضافة أو تعديل هنا.</li>
+        </ul></div>
+      </div>
+      <div class="note"><span class="ic">📊</span><div>«إجمالي المديونيات» = مجموع المتبقّي على كل الكروت. «إيراد الشهر» = مجموع فواتير الكروت المُسلّمة خلال الشهر الحالي.</div></div>
+    </div></section>
+
+    <!-- CUSTOMERS -->
+    <section id="customers"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/customers.png" alt="قائمة العملاء مع البحث والإضافة والتعديل"><figcaption>قائمة العملاء مع البحث والإضافة والتعديل</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">02</span><span class="chip chip-route"><span class="mono">customers.index</span></span><span class="chip chip-perm"><span class="mono">customers.view</span></span></div>
+        <h3>العملاء</h3>
+        <p class="lead">دليل عملاء المركز — إضافة، بحث، تعديل، وحذف بيانات العملاء.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span><span class="chip r-rec">استقبال</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>جدول: الاسم، الرقم القومي، الجوال، تاريخ الإضافة، والإجراءات.</li>
+          <li>خانة بحث فورية + زر «إضافة عميل».</li>
+          <li>تقسيم صفحات (10 لكل صفحة) ودرج جانبي للإضافة/التعديل.</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>بحث فوري بالاسم أو الجوال أو الرقم القومي.</li>
+          <li>إضافة عميل جديد أو تعديل عميل قائم.</li>
+          <li>حذف عميل (بتأكيد).</li>
+        </ul></div>
+      </div>
+      <div class="block" style="margin-top:16px"><h4>الحقول</h4>
+        <ul class="field-list">
+          <li><span class="fname">الاسم الكامل</span><span>مطلوب — 3 أحرف على الأقل.</span></li>
+          <li><span class="fname">الرقم القومي</span><span>مطلوب — غير مكرّر.</span></li>
+          <li><span class="fname">الجوال</span><span>مطلوب — غير مكرّر.</span></li>
+          <li><span class="fname">العنوان / ملاحظات</span><span>اختياري.</span></li>
+        </ul>
+      </div>
+    </div></section>
+
+    <!-- ITEMS -->
+    <section id="items"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/items.png" alt="سجل الأصناف (الأسلحة) وكل قطعة مربوطة بمالكها"><figcaption>سجل الأصناف (الأسلحة) وكل قطعة مربوطة بمالكها</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">03</span><span class="chip chip-route"><span class="mono">items.index</span></span><span class="chip chip-perm"><span class="mono">items.view</span></span></div>
+        <h3>سجل الأصناف</h3>
+        <p class="lead">أرشيف القطع (الأسلحة) وكل قطعة مربوطة بمالكها — إضافة، بحث، تعديل، وحذف.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span><span class="chip r-rec">استقبال</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>جدول: الرقم التسلسلي، النوع، الشركة المصنّعة، المالك، والإجراءات.</li>
+          <li>بحث فوري بالسريال أو باسم المالك.</li>
+          <li>درج للإضافة/التعديل مع بحث فوري عن المالك.</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>إضافة/تعديل/حذف قطعة.</li>
+          <li>اختيار المالك بالبحث بالاسم أو الجوال (يبدأ من حرفين).</li>
+        </ul></div>
+      </div>
+      <div class="block" style="margin-top:16px"><h4>الحقول</h4>
+        <ul class="field-list">
+          <li><span class="fname">المالك</span><span>مطلوب — اختيار من العملاء بالبحث.</span></li>
+          <li><span class="fname">الرقم التسلسلي</span><span>مطلوب — غير مكرّر.</span></li>
+          <li><span class="fname">النوع</span><span>مطلوب — مع اقتراحات (مسدس / بندقية / شوزن / رشاش).</span></li>
+          <li><span class="fname">الشركة المصنّعة</span><span>مطلوب (Glock, Beretta…).</span></li>
+          <li><span class="fname">رقم الترخيص / المواصفات</span><span>اختياري.</span></li>
+        </ul>
+      </div>
+    </div></section>
+
+    <!-- CARDS -->
+    <section id="cards"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/cards.png" alt="كروت الصيانة — بطاقات الكروت بأرقامها وحالاتها وتكلفتها"><figcaption>كروت الصيانة — بطاقات الكروت بأرقامها وحالاتها وتكلفتها</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">04</span><span class="chip chip-route"><span class="mono">maintenance.index</span></span><span class="chip chip-perm"><span class="mono">maintenance.view</span></span></div>
+        <h3>كروت الصيانة</h3>
+        <p class="lead">القائمة المركزية لكل كروت العمل — فتح كرت جديد بالطريقة المفصّلة، تعديل، وطباعة المستندات.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span><span class="chip r-rec">استقبال</span><span class="chip r-tech">فني</span><span class="chip r-qa">جودة</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>بطاقات الكروت: رقم الكرت <span class="mono">#BRQ-سنة-رقم</span>، العميل، شارة الحالة، القطعة، والتكلفة التقديرية.</li>
+          <li>بحث فوري + زر «فتح كرت جديد».</li>
+          <li>درج استقبال مقسّم 3 خطوات: بيانات العميل والقطعة، طلبات الإصلاح، التكلفة.</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>بحث بالرقم أو اسم/جوال العميل، وفلترة بالحالة.</li>
+          <li>فتح/تعديل/حذف كرت.</li>
+          <li>طباعة: <b>كرت العمل</b>، <b>كرت الإصلاح</b>، <b>الليبل</b> (تفتح في تبويب جديد).</li>
+        </ul></div>
+      </div>
+      <div class="note"><span class="ic">⚙︎</span><div>عند حفظ كرت جديد: بيتولّد رقم تلقائي، بيتسجّل الموظف المستلِم، الحالة تبقى <b>بانتظار البدء</b>، وبيتبعت إشعار للفنيين — ولو الواتساب مفعّل يتبعت PDF الكرت للعميل.</div></div>
+    </div></section>
+
+    <!-- QUICK -->
+    <section id="quick"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/quick.png" alt="شاشة الاستقبال السريع — بيانات العميل والسلاح والطلبات والدفع"><figcaption>شاشة الاستقبال السريع — بيانات العميل والسلاح والطلبات والدفع</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">05</span><span class="chip chip-route"><span class="mono">maintenance.quick-ticket</span></span><span class="chip chip-perm"><span class="mono">maintenance.create</span></span></div>
+        <h3>الاستقبال السريع</h3>
+        <p class="lead">استقبال كامل في شاشة واحدة: بيانات العميل والسلاح والطلبات والصورة والدفع، مع تأكيد هوية العميل بكود OTP على واتساب — وينشئ العميل والقطعة والكرت مرة واحدة.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span><span class="chip r-rec">استقبال</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>عمودين: بيانات العميل، بيانات السلاح، طلب الإصلاح.</li>
+          <li>لوحة جانبية: صورة القطعة + التقدير المالي والدفع بحساب <b>الضريبة الحيّ</b>.</li>
+          <li>تنبيه ملكية السريال + نافذة تحقق OTP.</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>كتابة الجوال تجيب العميل تلقائياً لو موجود، والسريال يجيب بيانات القطعة.</li>
+          <li>اختيار الخدمات الرسمية + طلبات حرة + التقاط صورة.</li>
+          <li>إدخال الأجور والقطع والمدفوع (المجموع والضريبة تلقائي).</li>
+          <li>«حفظ وطباعة» → إرسال OTP → إدخال الكود والتأكيد.</li>
+        </ul></div>
+      </div>
+      <div class="note warn"><span class="ic">🛡︎</span><div>لو السريال مملوك لعميل تاني، النظام <b>بيمنع الحفظ</b> حمايةً للملكية. التأكيد النهائي لا يتم إلا بكود OTP الصحيح المُرسَل لجوال المالك.</div></div>
+    </div></section>
+
+    <!-- ============ GROUP: MAINTENANCE ============ -->
+    <div class="group-label"><span>قسم الصيانة</span></div>
+
+    <!-- TECH -->
+    <section id="tech"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/tech.png" alt="لوحة الفنيين — الكروت النشطة وسجل جلسات العمل"><figcaption>لوحة الفنيين — الكروت النشطة وسجل جلسات العمل</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">06</span><span class="chip chip-route"><span class="mono">maintenance.technician</span></span><span class="chip chip-perm"><span class="mono">maintenance.tech_panel</span></span></div>
+        <h3>لوحة الفنيين</h3>
+        <p class="lead">مركز عمل الفني: بيشوف الكروت النشطة، يسجّل جلسات الإصلاح (الشغل + القطع + الوقت)، ويحرّك الكرت لبانتظار القطع أو للجودة.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span><span class="chip r-tech">فني</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>الكروت النشطة فقط (بانتظار البدء / قيد التنفيذ / بانتظار القطع).</li>
+          <li>لكل كرت: طلبات الإصلاح كوسوم + سجل جلسات العمل السابقة.</li>
+          <li>أزرار: تسجيل جلسة، بانتظار القطع، إرسال للجودة.</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>تسجيل جلسة إصلاح جديدة (وصف + قطع + وقت البداية والنهاية).</li>
+          <li>وضع الكرت في «بانتظار القطع».</li>
+          <li>«إرسال للجودة» → يبلّغ مشرف الجودة.</li>
+        </ul></div>
+      </div>
+      <div class="note"><span class="ic">⏱︎</span><div>أول جلسة عمل على كرت «بانتظار البدء» بتنقله تلقائياً لـ <b>قيد التنفيذ</b>. الوقت المُدخل بيُحتسَب لاحقاً في تقرير إنجاز الفنيين.</div></div>
+    </div></section>
+
+    <!-- QA -->
+    <section id="qa"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/qa.png" alt="فحص الجودة — الكروت بانتظار الاعتماد أو الرفض"><figcaption>فحص الجودة — الكروت بانتظار الاعتماد أو الرفض</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">07</span><span class="chip chip-route"><span class="mono">maintenance.qa</span></span><span class="chip chip-perm"><span class="mono">maintenance.qa_delivery</span></span></div>
+        <h3>فحص الجودة</h3>
+        <p class="lead">مشرف الجودة بيراجع الكروت اللي بعتها الفنيون، ويعتمدها للتسليم أو يرفضها ويرجّعها للفني — مع تسجيل الفحص.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span><span class="chip r-qa">جودة</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>الكروت في حالة «بانتظار الجودة» فقط.</li>
+          <li>لكل كرت: سجل جلسات العمل مع مدة كل جلسة.</li>
+          <li>نافذة فحص: مطابق / مرفوض + ملاحظات المشرف.</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>فتح الفحص واختيار القرار وكتابة الملاحظات.</li>
+          <li>حفظ القرار.</li>
+        </ul></div>
+      </div>
+      <div class="note"><span class="ic">✔︎</span><div><b>مطابق</b> → الكرت يبقى «جاهز للتسليم» ويتبعت واتساب «جاهز» للعميل. &nbsp;<b>مرفوض</b> → يرجع «قيد التنفيذ» ويتبعت إشعار للفني.</div></div>
+    </div></section>
+
+    <!-- DELIVERY -->
+    <section id="delivery"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/delivery.png" alt="التسليم — الكروت الجاهزة والتكلفة النهائية والدفع"><figcaption>التسليم — الكروت الجاهزة والتكلفة النهائية والدفع</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">08</span><span class="chip chip-route"><span class="mono">maintenance.delivery</span></span><span class="chip chip-perm"><span class="mono">maintenance.qa_delivery</span></span></div>
+        <h3>التسليم والاستلام</h3>
+        <p class="lead">إنهاء الكروت المعتمدة: تحديد التكلفة النهائية، تحصيل الدفع، تأكيد هوية العميل بـ OTP، ثم التسليم والأرشفة.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span><span class="chip r-qa">جودة</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>الكروت «الجاهزة» فقط + زر «بدء التسليم».</li>
+          <li>درج التسليم: الأجور والقطع النهائية + الضريبة والإجمالي الحيّ.</li>
+          <li>حالة الدفع (مدفوع كامل / جزئي / غير مدفوع) + نافذة OTP.</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>تعديل التكلفة النهائية (يعيد حساب الضريبة والمتبقّي).</li>
+          <li>اختيار حالة الدفع وإدخال المدفوع.</li>
+          <li>«إنهاء التسليم» → OTP → تأكيد وأرشفة الكرت.</li>
+        </ul></div>
+      </div>
+      <div class="note"><span class="ic">🏁</span><div>بعد التأكيد: الحالة تبقى <b>تم التسليم</b>، يتسجّل وقت التسليم وكل الأرقام النهائية، ويتبعت واتساب «تم التسليم» للعميل. دي الحالة النهائية للكرت.</div></div>
+    </div></section>
+
+    <!-- ============ GROUP: FINANCE ============ -->
+    <div class="group-label"><span>المالية والتقارير</span></div>
+
+    <!-- DEBTS -->
+    <section id="debts"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/debts.png" alt="الديون والتحصيل — المُحصّل والمتبقّي لكل كرت مُسلّم"><figcaption>الديون والتحصيل — المُحصّل والمتبقّي لكل كرت مُسلّم</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">09</span><span class="chip chip-route"><span class="mono">financials.index</span></span><span class="chip chip-perm"><span class="mono">financials.view</span></span></div>
+        <h3>الديون والتحصيل</h3>
+        <p class="lead">إدارة المتبقّي على الكروت المُسلّمة وتحصيله — وتحديد المبالغ المحصّلة بالكامل.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>بطاقتان: <b>إجمالي المُحصّل</b> و<b>إجمالي المتبقّي</b> لكل الكروت المُسلّمة.</li>
+          <li>جدول الكروت المُسلّمة: الإجمالي، المدفوع، المتبقّي (أحمر لو فيه دين).</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>فلترة: الكل / عليه دين / تم التحصيل.</li>
+          <li>بحث باسم العميل أو رقم الكرت.</li>
+          <li>«تحصيل المتبقّي» → يصفّر الدين ويعلّم الكرت مدفوع بالكامل.</li>
+        </ul></div>
+      </div>
+      <div class="note"><span class="ic">💳</span><div>التحصيل هنا «الكل أو لا شيء» (بيسدّد المتبقّي كامل). الإجماليات محسوبة على كل الكروت المُسلّمة — مش متأثرة بالبحث أو الفلترة.</div></div>
+    </div></section>
+
+    <!-- SEARCH -->
+    <section id="search"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/search.png" alt="البحث الشامل — بحث في كل الكروت مع التفصيل المالي والطباعة"><figcaption>البحث الشامل — بحث في كل الكروت مع التفصيل المالي والطباعة</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">10</span><span class="chip chip-route"><span class="mono">reports.history</span></span><span class="chip chip-perm"><span class="mono">reports.view</span></span></div>
+        <h3>البحث الشامل</h3>
+        <p class="lead">بحث في كل الكروت بأي بيانات للعميل أو القطعة، وعرض تاريخ كل كرت مع التفصيل المالي وخيارات الطباعة.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span><span class="chip r-rec">استقبال</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>خانة بحث فورية + شريط بيانات العميل عند المطابقة (وعدد معاملاته).</li>
+          <li>بطاقات الكروت: الحالة، القطعة، وتفصيل مالي (قبل الضريبة، ضريبة 15%، الإجمالي).</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>بحث بالاسم/الجوال/الرقم القومي/رقم الكرت/سريال القطعة.</li>
+          <li>طباعة لكل كرت: كرت العمل، كرت الإصلاح، الليبل.</li>
+        </ul></div>
+      </div>
+      <div class="note"><span class="ic">🔎</span><div>الصفحة للعرض والطباعة فقط — مفيش تعديل أو تحصيل هنا. لو اتطابق عميل واحد، النتائج بتتفلتر على كروته.</div></div>
+    </div></section>
+
+    <!-- ANALYTICS -->
+    <section id="analytics"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/analytics.png" alt="التقارير المالية — مؤشرات وإيرادات وأداء الفنيين بفترة زمنية"><figcaption>التقارير المالية — مؤشرات وإيرادات وأداء الفنيين بفترة زمنية</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">11</span><span class="chip chip-route"><span class="mono">reports.analytics</span></span><span class="chip chip-perm"><span class="mono">financials.view</span></span></div>
+        <h3>التقارير المالية</h3>
+        <p class="lead">لوحة مالية وأداء الفنيين بفترة زمنية للكروت المُسلّمة — إيرادات، ضريبة، ورسوم بيانية.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>فلتر تاريخ (من / إلى) — الافتراضي من بداية الشهر لليوم.</li>
+          <li>5 بطاقات: الأجور، القطع، قبل الضريبة، <b>الضريبة المحصّلة</b>، الإجمالي.</li>
+          <li>رسم إيراد آخر 6 شهور + رسم الحالات + <b>أداء الفنيين</b> وجدولهم.</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>تحديد الفترة وتحديث التقرير.</li>
+          <li>مراجعة الرسوم وجدول إنجاز الفنيين وساعات العمل.</li>
+        </ul></div>
+      </div>
+      <div class="note"><span class="ic">📈</span><div>البطاقات تخصّ الكروت المُسلّمة داخل الفترة المختارة. أداء الفني = عدد الكروت اللي اشتغل عليها + مجموع ساعات عمله في الفترة.</div></div>
+    </div></section>
+
+    <!-- NOTIF -->
+    <section id="notif"><div class="card">
+      <div class="page-head">
+        <div class="eyebrow"><span class="chip chip-route"><span class="mono">component</span></span><span class="chip chip-open">في الشريط العلوي</span></div>
+        <h3>الإشعارات</h3>
+        <p class="lead">جرس الإشعارات في أعلى الشاشة — بيعرض آخر التنبيهات مع عدّاد غير مقروء، وبيوصّلك للكرت المرتبط.</p>
+        <div class="who">يظهر لـ: <span class="chip r-mgr">مدير</span><span class="chip r-rec">استقبال</span><span class="chip r-tech">فني</span><span class="chip r-qa">جودة</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>أيقونة جرس بعدّاد غير مقروء (يعرض «+9» فوق التسعة).</li>
+          <li>قائمة بآخر 12 إشعار مع الأيقونة والرسالة ورقم الكرت والوقت.</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>فتح القائمة، تعليم إشعار كمقروء (يوّدّيك للكرت)، أو «تعليم الكل كمقروء».</li>
+        </ul></div>
+      </div>
+      <div class="note"><span class="ic">🔔</span><div>القائمة بتتحدّث كل 20 ثانية تلقائياً، ومع كل إشعار جديد بيظهر تنبيه وصوت قصير.</div></div>
+    </div></section>
+
+    <!-- ============ GROUP: ADMIN ============ -->
+    <div class="group-label"><span>الإدارة (المدير فقط)</span></div>
+
+    <!-- STAFF -->
+    <section id="staff"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/staff.png" alt="إدارة الموظفين — حسابات النظام وأدوارها"><figcaption>إدارة الموظفين — حسابات النظام وأدوارها</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">12</span><span class="chip chip-route"><span class="mono">staff.index</span></span><span class="chip chip-perm"><span class="mono">staff.manage</span></span></div>
+        <h3>إدارة الموظفين</h3>
+        <p class="lead">قائمة مستخدمي النظام — إضافة، تعديل، بحث، وحذف الحسابات وتعيين الدور لكل موظف.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>جدول: الاسم، اسم المستخدم، الدور (كوسم)، الجوال، والإجراءات.</li>
+          <li>درج جانبي للإضافة/التعديل.</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>بحث بالاسم أو اسم المستخدم.</li>
+          <li>إضافة/تعديل/حذف موظف (مينفعش تحذف نفسك).</li>
+          <li>عند التعديل: سيب كلمة المرور فاضية للإبقاء عليها.</li>
+        </ul></div>
+      </div>
+      <div class="block" style="margin-top:16px"><h4>الحقول</h4>
+        <ul class="field-list">
+          <li><span class="fname">الاسم</span><span>مطلوب.</span></li>
+          <li><span class="fname">اسم المستخدم</span><span>مطلوب — غير مكرّر.</span></li>
+          <li><span class="fname">الدور</span><span>استقبال / فني / جودة / مدير.</span></li>
+          <li><span class="fname">كلمة المرور</span><span>6 أحرف على الأقل عند الإنشاء.</span></li>
+        </ul>
+      </div>
+    </div></section>
+
+    <!-- ROLES MGMT -->
+    <section id="rolesmgmt"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/rolesmgmt.png" alt="الأدوار والصلاحيات — بطاقات الأدوار والتحكم في الصلاحيات"><figcaption>الأدوار والصلاحيات — بطاقات الأدوار والتحكم في الصلاحيات</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">13</span><span class="chip chip-route"><span class="mono">staff.roles</span></span><span class="chip chip-perm"><span class="mono">staff.manage</span></span></div>
+        <h3>الأدوار والصلاحيات</h3>
+        <p class="lead">إنشاء وتعديل الأدوار والتحكّم في صلاحيات كل دور بالتحديد — من غير أي تعديل على الكود.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li>بطاقات الأدوار: الكود، الاسم، الوصف، والصلاحيات الممنوحة.</li>
+          <li>نافذة تعديل بها الصلاحيات مجمّعة حسب القسم (اختيار متعدد).</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>إضافة دور جديد أو تعديل دور قائم.</li>
+          <li>تفعيل/إلغاء أي صلاحية للدور وحفظها.</li>
+        </ul></div>
+      </div>
+      <div class="note"><span class="ic">🗝︎</span><div>ده المكان اللي بتظبط منه «مين يشوف إيه». أي تعديل هنا بيسري فوراً على القائمة الجانبية وعلى صلاحية فتح الصفحات بالرابط المباشر.</div></div>
+    </div></section>
+
+    <!-- SETTINGS -->
+    <section id="settings"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/settings.png" alt="الإعدادات — تبويبات الهوية والرسائل وواتساب والطباعة والخدمات"><figcaption>الإعدادات — تبويبات الهوية والرسائل وواتساب والطباعة والخدمات</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">14</span><span class="chip chip-route"><span class="mono">settings.index</span></span><span class="chip chip-perm"><span class="mono">staff.manage</span></span></div>
+        <h3>الإعدادات</h3>
+        <p class="lead">مركز إعدادات النظام: الهوية والعلامة، الرسائل، ربط واتساب، نصوص الطباعة، وقائمة خدمات الصيانة الرسمية.</p>
+        <div class="who">يفتحها: <span class="chip r-mgr">مدير</span></div>
+      </div>
+      <div class="block"><h4>التبويبات</h4>
+        <ul class="field-list">
+          <li><span class="fname">الهوية والعلامة</span><span>اسم النظام (عربي/إنجليزي)، نص الفوتر، شعار النظام، وخلفية صفحة الدخول.</span></li>
+          <li><span class="fname">إعدادات SMS</span><span>وضع تجريبي/فعلي، بيانات Twilio، وأداة إرسال تجريبي.</span></li>
+          <li><span class="fname">إعدادات واتساب</span><span>ربط Evolution API، تجربة إرسال، لوحة الاتصال وكود QR، وسجل آخر الرسائل.</span></li>
+          <li><span class="fname">الشروط والطباعة</span><span>نص الشروط والأحكام المطبوع على المستندات.</span></li>
+          <li><span class="fname">خدمات الصيانة</span><span>إضافة/تعديل/حذف الخدمات الرسمية (كود + اسم) — للمدير.</span></li>
+        </ul>
+      </div>
+      <div class="note"><span class="ic">🔌</span><div>ربط واتساب هو أساس كل رسائل النظام (OTP، الجاهزية، التسليم). فعّله وامسح كود QR بجوال المركز لتشغيل الإرسال. الضريبة ثابتة 15% في الحسابات (مش إعداد قابل للتغيير هنا).</div></div>
+    </div></section>
+
+    <!-- ============ GROUP: CUSTOMER ============ -->
+    <div class="group-label"><span>واجهة العميل</span></div>
+
+    <!-- PORTAL -->
+    <section id="portal"><div class="card">
+      <figure class="shot"><img loading="lazy" src="screenshots/portal-login.png" alt="بورتال العميل — شاشة الدخول والتحقق بكود OTP"><figcaption>بورتال العميل — شاشة الدخول والتحقق بكود OTP</figcaption></figure>
+      <figure class="shot"><img loading="lazy" src="screenshots/portal-dashboard.png" alt="بورتال العميل — لوحة العميل بعد التحقق: الكروت والموقف المالي والأسلحة"><figcaption>بورتال العميل — لوحة العميل بعد التحقق: الكروت والموقف المالي والأسلحة</figcaption></figure>
+      <div class="page-head">
+        <div class="eyebrow"><span class="page-num">15</span><span class="chip chip-route"><span class="mono">portal.index</span></span><span class="chip r-pub">عام — تحقق OTP</span></div>
+        <h3>بورتال العميل</h3>
+        <p class="lead">واجهة عامة يقدر العميل من خلالها يستعلم عن قطعه بنفسه، يتحقّق بكود OTP على واتساب، ويشوف كروته وموقفه المالي وأسلحته المسجّلة.</p>
+        <div class="who">لـ: <span class="chip r-pub">العميل (بدون تسجيل دخول)</span></div>
+      </div>
+      <div class="cols">
+        <div class="block"><h4>اللي بيظهر</h4><ul>
+          <li><b>شاشة الدخول:</b> بحث + خطوتين (طلب الكود → إدخاله).</li>
+          <li><b>لوحة العميل:</b> بياناته، 3 مؤشرات (عدد الكروت، المدفوع، المتبقّي)، كروته، وأسلحته.</li>
+        </ul></div>
+        <div class="block"><h4>الإجراءات</h4><ul>
+          <li>البحث بالجوال/الرقم القومي/رقم الكرت/السريال وطلب الكود.</li>
+          <li>إدخال الكود والتحقق، وإعادة الإرسال.</li>
+          <li>عرض حالة كل كرت وتفصيله المالي وطباعة كرت العمل والإصلاح.</li>
+        </ul></div>
+      </div>
+      <div class="note"><span class="ic">🔒</span><div>يُرسَل كود OTP من 4 أرقام لجوال العميل عبر واتساب. الوصول لبيانات أي عميل محميّ بالتحقق — مش بتسجيل دخول.</div></div>
+    </div></section>
+
+    <div class="foot">
+      دليل استخدام نظام <b>AURA TAC</b> — إعداد للفريق الداخلي.<br>
+      تصميم وتطوير <a href="https://s-plus.me" target="_blank" rel="noopener">S-PLUS</a>
+    </div>
+  </main>
+</div>
+
+<button class="backtop" id="backtop" aria-label="أعلى الصفحة">↑</button>
+
+<script>
+  // Theme toggle (respects stored choice)
+  (function(){
+    var root=document.documentElement, key='auratac-guide-theme';
+    try{var s=localStorage.getItem(key); if(s)root.setAttribute('data-theme',s);}catch(e){}
+    var btn=document.getElementById('themeBtn');
+    btn.addEventListener('click',function(){
+      var cur=root.getAttribute('data-theme');
+      var isDark = cur ? cur==='dark' : matchMedia('(prefers-color-scheme:dark)').matches;
+      var next=isDark?'light':'dark';
+      root.setAttribute('data-theme',next);
+      try{localStorage.setItem(key,next);}catch(e){}
+    });
+  })();
+
+  // Scroll-spy for TOC
+  (function(){
+    var links=[].slice.call(document.querySelectorAll('.toc a'));
+    var map={}; links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+    var secs=[].slice.call(document.querySelectorAll('section[id]'));
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          links.forEach(function(a){a.classList.remove('active');});
+          var a=map[en.target.id]; if(a)a.classList.add('active');
+        }
+      });
+    },{rootMargin:'-45% 0px -50% 0px',threshold:0});
+    secs.forEach(function(s){obs.observe(s);});
+  })();
+
+  // Back to top
+  (function(){
+    var b=document.getElementById('backtop');
+    addEventListener('scroll',function(){ b.classList.toggle('show', scrollY>600); },{passive:true});
+    b.addEventListener('click',function(){ scrollTo({top:0,behavior:'smooth'}); });
+  })();
+</script>

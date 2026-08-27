@@ -30,3 +30,6 @@ Thumbs.db
 
 # Imported design source (reference only)
 /_design/
+
+# Local working copy of the guide (served copy lives in public/guide)
+/Docs/guide/

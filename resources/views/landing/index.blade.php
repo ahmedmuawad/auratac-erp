@@ -439,6 +439,7 @@
                     <a href="#faq" class="at-foot-link">الأسئلة الشائعة</a>
                     <a href="{{ route('portal.index') }}" class="at-foot-link">دخول العميل</a>
                     <a href="{{ route('login') }}" class="at-foot-link">دخول الموظفين</a>
+                    <a href="/guide/aura-tac-guide.html" target="_blank" rel="noopener" class="at-foot-link">دليل استخدام النظام</a>
                 </div>
             </div>
             <div>
