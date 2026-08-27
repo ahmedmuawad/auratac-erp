@@ -23,11 +23,13 @@
     </div>
 
     {{-- Primary action (FAB-style) --}}
-    <a href="{{ route('maintenance.quick-ticket') }}"
-       class="md-state flex items-center gap-3 h-14 px-5 rounded-md-lg bg-primary text-on-primary font-bold mb-6 shadow-md-2">
-        <span class="material-symbols-rounded" style="font-size:24px">bolt</span>
-        <span class="text-label">{{ __('messages.quick_receive') }}</span>
-    </a>
+    @if(auth()->user()->hasPermission('maintenance.create'))
+        <a href="{{ route('maintenance.quick-ticket') }}"
+           class="md-state flex items-center gap-3 h-14 px-5 rounded-md-lg bg-primary text-on-primary font-bold mb-6 shadow-md-2">
+            <span class="material-symbols-rounded" style="font-size:24px">bolt</span>
+            <span class="text-label">{{ __('messages.quick_receive') }}</span>
+        </a>
+    @endif
 
     {{-- Navigation --}}
     <nav class="flex-1 overflow-y-auto custom-scrollbar pe-1 space-y-6">
@@ -94,19 +96,23 @@
         </div>
 
         {{-- Reports --}}
-        <div class="space-y-1 pt-4 border-t border-white/5">
-            <p class="px-4 mb-2 text-label-sm text-on-onyx-variant uppercase tracking-widest">{{ __('messages.reports_inquiry') }}</p>
+        @if(auth()->user()->hasPermission('reports.view'))
+            <div class="space-y-1 pt-4 border-t border-white/5">
+                <p class="px-4 mb-2 text-label-sm text-on-onyx-variant uppercase tracking-widest">{{ __('messages.reports_inquiry') }}</p>
 
-            <a href="{{ route('reports.history') }}" class="md-nav-item {{ request()->routeIs('reports.history') ? 'md-nav-item-active' : '' }}">
-                <span class="material-symbols-rounded" style="font-size:22px">manage_search</span>
-                <span>{{ __('messages.comprehensive_search') }}</span>
-            </a>
+                <a href="{{ route('reports.history') }}" class="md-nav-item {{ request()->routeIs('reports.history') ? 'md-nav-item-active' : '' }}">
+                    <span class="material-symbols-rounded" style="font-size:22px">manage_search</span>
+                    <span>{{ __('messages.comprehensive_search') }}</span>
+                </a>
 
-            <a href="{{ route('reports.analytics') }}" class="md-nav-item {{ request()->routeIs('reports.analytics') ? 'md-nav-item-active' : '' }}">
-                <span class="material-symbols-rounded" style="font-size:22px">analytics</span>
-                <span>{{ __('messages.analytics_reports') }}</span>
-            </a>
-        </div>
+                @if($role === 'manager')
+                    <a href="{{ route('reports.analytics') }}" class="md-nav-item {{ request()->routeIs('reports.analytics') ? 'md-nav-item-active' : '' }}">
+                        <span class="material-symbols-rounded" style="font-size:22px">analytics</span>
+                        <span>{{ __('messages.analytics_reports') }}</span>
+                    </a>
+                @endif
+            </div>
+        @endif
 
         {{-- Admin --}}
         @if($role == 'manager')

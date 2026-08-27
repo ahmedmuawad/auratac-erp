@@ -32,6 +32,9 @@ class RoleAndPermissionSeeder extends Seeder
             ['key' => 'maintenance.tech_panel', 'group' => 'maintenance', 'display_name' => 'دخول لوحة الفنيين'],
             ['key' => 'maintenance.qa_delivery', 'group' => 'maintenance', 'display_name' => 'الجودة والتسليم'],
 
+            // Reports
+            ['key' => 'reports.view', 'group' => 'reports', 'display_name' => 'التقارير والاستعلام الشامل'],
+
             // Staff
             ['key' => 'staff.manage', 'group' => 'staff', 'display_name' => 'إدارة الموظفين والصلاحيات'],
             ['key' => 'financials.view', 'group' => 'financials', 'display_name' => 'عرض التقارير المالية والديون'],
@@ -60,7 +63,7 @@ class RoleAndPermissionSeeder extends Seeder
         
         // Reception
         $roleModels['reception']->permissions()->sync(
-            Permission::whereIn('group', ['customers', 'items'])->orWhereIn('key', ['maintenance.view', 'maintenance.create'])->pluck('id')
+            Permission::whereIn('group', ['customers', 'items'])->orWhereIn('key', ['maintenance.view', 'maintenance.create', 'reports.view'])->pluck('id')
         );
 
         // Technician
