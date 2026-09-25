@@ -61,19 +61,41 @@ class MaintenanceCardController extends Controller
     {
         $card = MaintenanceCard::with(['customer', 'item'])->findOrFail($id);
 
+        // Wristband dimensions — configurable from Settings so they can be tuned
+        // to the exact media & printer without code changes.
+        // The band is one long strip (default 270mm x 30mm), but printing is
+        // confined to the flat "print zone" — the rest (holes/strap) stays blank.
+        $w      = (float) get_setting('label_width_mm', 270);        // full band length (feed direction)
+        $h      = (float) get_setting('label_height_mm', 30);        // band width
+        $zone   = (float) get_setting('label_zone_mm', 90);          // printable flat-tab length
+        $offset = (float) get_setting('label_zone_offset_mm', 0);    // distance of the zone from the leading edge
+        $bcWidth  = (int) get_setting('label_barcode_width', 2);     // module width factor
+        $bcHeight = (int) get_setting('label_barcode_height', 45);
+
+        // Barcode fills the print zone (mPDF ignores CSS sizing on <svg>, so set it explicitly).
+        $bcMmW = max(round($zone - 8), 10);
+        $bcMmH = max($h - 14, 8);
+
         $barcodeService = new BarcodeService();
-        $barcode = preg_replace('/<\?xml.*\?>/i', '', $barcodeService->generate($card->card_number, 1, 32));
+        $barcode = $barcodeService->generate($card->card_number, $bcWidth, $bcHeight);
+        $barcode = preg_replace('/<\?xml.*\?>/i', '', $barcode);
+        $barcode = preg_replace('/(<svg\b[^>]*?)\s+width="[^"]*"/i', '$1 width="' . $bcMmW . 'mm"', $barcode, 1);
+        $barcode = preg_replace('/(<svg\b[^>]*?)\s+height="[^"]*"/i', '$1 height="' . $bcMmH . 'mm"', $barcode, 1);
 
         $pdf = PDF::loadView('maintenance.print-label', [
             'card' => $card,
             'barcode' => $barcode,
+            'w' => $w,
+            'h' => $h,
+            'zone' => $zone,
+            'offset' => $offset,
         ], [], [
             'mode' => 'utf-8',
-            'format' => [70, 40], // 70mm x 40mm label
-            'margin_left' => 3,
-            'margin_right' => 3,
-            'margin_top' => 3,
-            'margin_bottom' => 3,
+            'format' => [$w, $h],
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
             'temp_dir' => storage_path('app/public'),
         ]);
 
