@@ -34,6 +34,9 @@
             <button wire:click="$set('activeTab', 'general')" class="md-state w-full flex items-center gap-3 px-5 h-12 rounded-md-xl text-label {{ $activeTab == 'general' ? 'bg-primary text-on-primary' : 'bg-surface text-on-surface-variant' }}">
                 <span class="material-symbols-rounded" style="font-size:20px">description</span> {{ __('messages.terms_printing') }}
             </button>
+            <button wire:click="$set('activeTab', 'label')" class="md-state w-full flex items-center gap-3 px-5 h-12 rounded-md-xl text-label {{ $activeTab == 'label' ? 'bg-primary text-on-primary' : 'bg-surface text-on-surface-variant' }}">
+                <span class="material-symbols-rounded" style="font-size:20px">straighten</span> مقاسات الليبل
+            </button>
             @if(auth()->user()->role === 'manager')
             <button wire:click="$set('activeTab', 'repair_services')" class="md-state w-full flex items-center gap-3 px-5 h-12 rounded-md-xl text-label {{ $activeTab == 'repair_services' ? 'bg-primary text-on-primary' : 'bg-surface text-on-surface-variant' }}">
                 <span class="material-symbols-rounded" style="font-size:20px">build</span> {{ __('messages.repair_services_settings') }}
@@ -273,6 +276,48 @@
                         <label class="md-label">{{ __('messages.terms_label') }}</label>
                         <textarea wire:model="terms_conditions" rows="10" class="md-field"></textarea>
                         <p class="text-label-sm text-on-surface-variant mt-1">{{ __('messages.terms_hint') }}</p>
+                    </div>
+                </div>
+            @elseif($activeTab == 'label')
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-title-medium text-on-surface font-semibold">مقاسات الليبل / الأسورة</h3>
+                        <p class="text-body-sm text-on-surface-variant mt-0.5">اضبط أبعاد الأسورة ومنطقة الطباعة بالمليمتر لتطابق الوسائط والطابعة. اضغط «حفظ» بالأعلى بعد التعديل.</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="md-label">طول الأسورة (مم)</label>
+                            <input type="number" step="1" wire:model="label_width_mm" class="md-field">
+                            <p class="text-label-sm text-on-surface-variant mt-1">الطول الكامل للأسورة في اتجاه الطباعة — افتراضي 270.</p>
+                        </div>
+                        <div>
+                            <label class="md-label">عرض الأسورة (مم)</label>
+                            <input type="number" step="1" wire:model="label_height_mm" class="md-field">
+                            <p class="text-label-sm text-on-surface-variant mt-1">عرض الشريط — افتراضي 30.</p>
+                        </div>
+                        <div>
+                            <label class="md-label">طول منطقة الطباعة (مم)</label>
+                            <input type="number" step="1" wire:model="label_zone_mm" class="md-field">
+                            <p class="text-label-sm text-on-surface-variant mt-1">الجزء المسطّح المخصص للطباعة فقط — افتراضي 90. الباقي يفضل فاضي.</p>
+                        </div>
+                        <div>
+                            <label class="md-label">بُعد منطقة الطباعة عن البداية (مم)</label>
+                            <input type="number" step="1" wire:model="label_zone_offset_mm" class="md-field">
+                            <p class="text-label-sm text-on-surface-variant mt-1">لو التاب في الطرف الآخر زوّد القيمة — مثلاً 180.</p>
+                        </div>
+                        <div>
+                            <label class="md-label">سُمك خطوط الباركود</label>
+                            <input type="number" step="1" min="1" wire:model="label_barcode_width" class="md-field">
+                            <p class="text-label-sm text-on-surface-variant mt-1">معامل عرض الوحدة — افتراضي 2.</p>
+                        </div>
+                        <div>
+                            <label class="md-label">دقة ارتفاع الباركود</label>
+                            <input type="number" step="1" wire:model="label_barcode_height" class="md-field">
+                            <p class="text-label-sm text-on-surface-variant mt-1">افتراضي 45.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 rounded-md-md bg-surface-variant text-on-surface-variant" style="background:#F0EBE2">
+                        <p class="text-label-sm">تلميح: بعد الحفظ اطبع كرت تجربة وعدّل «طول منطقة الطباعة» و«البُعد» حتى ينزل الباركود على الجزء المسطّح بالظبط، وتأكد إن مقاس الوسائط في الطابعة = العرض × الطول مع معايرة الوسائط (Calibrate).</p>
                     </div>
                 </div>
             @elseif($activeTab == 'repair_services' && auth()->user()->role === 'manager')

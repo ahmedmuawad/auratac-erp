@@ -33,6 +33,9 @@ class Index extends Component
     // General Settings
     public $terms_conditions;
 
+    // Label / Wristband dimensions (mm)
+    public $label_width_mm, $label_height_mm, $label_zone_mm, $label_zone_offset_mm, $label_barcode_width, $label_barcode_height;
+
     // Repair Services Settings (Admin only)
     public $repairServices = [];
     public $newServiceLabel = '';
@@ -63,6 +66,12 @@ class Index extends Component
         $this->whatsapp_country_code = get_setting('whatsapp_country_code', '966');
         $this->whatsapp_min_gap_seconds = get_setting('whatsapp_min_gap_seconds', '4');
         $this->terms_conditions = get_setting('terms_conditions');
+        $this->label_width_mm = get_setting('label_width_mm', '270');
+        $this->label_height_mm = get_setting('label_height_mm', '30');
+        $this->label_zone_mm = get_setting('label_zone_mm', '90');
+        $this->label_zone_offset_mm = get_setting('label_zone_offset_mm', '0');
+        $this->label_barcode_width = get_setting('label_barcode_width', '2');
+        $this->label_barcode_height = get_setting('label_barcode_height', '45');
         $this->loadRepairServices();
     }
 
@@ -84,6 +93,12 @@ class Index extends Component
             'whatsapp_country_code' => $this->whatsapp_country_code ?: '966',
             'whatsapp_min_gap_seconds' => $this->whatsapp_min_gap_seconds === null || $this->whatsapp_min_gap_seconds === '' ? '4' : $this->whatsapp_min_gap_seconds,
             'terms_conditions' => $this->terms_conditions,
+            'label_width_mm' => $this->label_width_mm !== '' ? $this->label_width_mm : '270',
+            'label_height_mm' => $this->label_height_mm !== '' ? $this->label_height_mm : '30',
+            'label_zone_mm' => $this->label_zone_mm !== '' ? $this->label_zone_mm : '90',
+            'label_zone_offset_mm' => $this->label_zone_offset_mm !== '' ? $this->label_zone_offset_mm : '0',
+            'label_barcode_width' => $this->label_barcode_width !== '' ? $this->label_barcode_width : '2',
+            'label_barcode_height' => $this->label_barcode_height !== '' ? $this->label_barcode_height : '45',
         ];
 
         foreach ($data as $key => $value) {
